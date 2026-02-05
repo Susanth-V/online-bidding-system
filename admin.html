@@ -6,16 +6,23 @@
 </head>
 <body class="login-bg">
 
-<div class="login-box">
+<div class="login-box admin-box">
   <h2>Admin Login</h2>
-
   <input type="text" id="user" placeholder="Username">
   <input type="password" id="pass" placeholder="Password">
   <button onclick="adminLogin()">Login</button>
-
   <p id="error"></p>
 </div>
 
+<script>
+function adminLogin(){
+  if(user.value==="preesuzz" && pass.value==="50sodaa"){
+    window.location.href="admin-dashboard.html";
+  } else {
+    error.innerText="Invalid Credentials";
+  }
+}
+</script>
 <script src="script.js"></script>
 </body>
 </html>

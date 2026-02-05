@@ -6,13 +6,32 @@
 </head>
 <body>
 
-<h2>User Dashboard</h2>
-<p>Welcome, <span id="userEmail"></span></p>
+<h2>User Bidding Panel</h2>
 
-<script>
-  document.getElementById("userEmail").innerText =
-    localStorage.getItem("currentUser");
-</script>
+<div class="bid-card">
+  <h3>Highest Bid</h3>
+  <input type="number" placeholder="Enter bid">
+  <button>Submit</button>
+</div>
 
+<div class="bid-card">
+  <h3>Lowest Bid</h3>
+  <input type="number" placeholder="Enter bid">
+  <button>Submit</button>
+</div>
+
+<div class="bid-card">
+  <h3>Second Secret Bid</h3>
+  <input type="number" placeholder="Secret bid">
+  <button>Submit</button>
+</div>
+
+<div class="bid-card">
+  <h3>Multi Variable Bid</h3>
+  <input type="number" placeholder="Price">
+  <input type="number" placeholder="Points">
+  <button>Submit</button>
+</div>
+<script src="script.js"></script>
 </body>
 </html>

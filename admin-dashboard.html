@@ -3,10 +3,8 @@
 <head>
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
-<body onload="loadAdminStats(); loadCharts(); startTimer();">
+<body>
 
 <h2>Admin Dashboard</h2>
 
@@ -15,18 +13,10 @@
   <p id="users"></p>
 </div>
 
-<div class="admin-card">
-  <h3>Total Bids</h3>
-  <p id="bids"></p>
-</div>
-
-<div class="admin-card">
-  <h3>Countdown Timer</h3>
-  <p id="timer"></p>
-</div>
-
-<canvas id="bidChart" width="350"></canvas>
-
+<script>
+let users = JSON.parse(localStorage.getItem("users") || "[]");
+document.getElementById("users").innerText = users.length;
+</script>
 <script src="script.js"></script>
 </body>
 </html>

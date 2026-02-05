@@ -52,8 +52,7 @@ body {
   animation: fade 1s;
 }
 
-.login-box input,
-.login-box button {
+.login-box input, button {
   width: 100%;
   margin: 10px 0;
   padding: 10px;
@@ -61,21 +60,4 @@ body {
 
 button {
   background: #00c6ff;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-
-.admin-card {
-  display: inline-block;
-  background: white;
-  padding: 20px;
-  margin: 15px;
-  border-radius: 10px;
-  width: 200px;
-}
-
-@keyframes fade {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+  border: n
