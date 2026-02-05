@@ -14,19 +14,7 @@
   <p id="error"></p>
 </div>
 
-<script>
-function userLogin(){
-  const email = document.getElementById("email").value;
-  if(email){
-    let users = JSON.parse(localStorage.getItem("users") || "[]");
-    users.push(email);
-    localStorage.setItem("users", JSON.stringify(users));
-    window.location.href = "user-dashboard.html";
-  } else {
-    document.getElementById("error").innerText = "Enter valid email";
-  }
-}
-</script>
 <script src="script.js"></script>
 </body>
+
 </html>
