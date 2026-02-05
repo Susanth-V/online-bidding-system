@@ -52,7 +52,8 @@ body {
   animation: fade 1s;
 }
 
-.login-box input, button {
+.login-box input,
+.login-box button {
   width: 100%;
   margin: 10px 0;
   padding: 10px;
@@ -65,21 +66,16 @@ button {
   cursor: pointer;
 }
 
-.bid-card, .admin-card {
+.admin-card {
+  display: inline-block;
   background: white;
-  width: 300px;
-  margin: 20px auto;
   padding: 20px;
+  margin: 15px;
   border-radius: 10px;
-}
-
-.timer {
-  font-size: 22px;
-  font-weight: bold;
-  color: #e63946;
+  width: 200px;
 }
 
 @keyframes fade {
-  from {opacity:0; transform:translateY(30px);}
-  to {opacity:1;}
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }

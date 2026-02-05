@@ -6,41 +6,13 @@
 </head>
 <body>
 
-<h2>User Bidding Panel</h2>
+<h2>User Dashboard</h2>
+<p>Welcome, <span id="userEmail"></span></p>
 
-<h3>Auction Ends In:</h3>
-<div id="timer" class="timer"></div>
-
-<div class="bid-card">
-  <h3>Highest Bid</h3>
-  <input id="hb" type="number">
-  <button onclick="submitBid('highest', hb.value)">Submit</button>
-</div>
-
-<div class="bid-card">
-  <h3>Lowest Bid</h3>
-  <input id="lb" type="number">
-  <button onclick="submitBid('lowest', lb.value)">Submit</button>
-</div>
-
-<div class="bid-card">
-  <h3>Second Secret Bid</h3>
-  <input id="sb" type="number">
-  <button onclick="submitBid('secret', sb.value)">Submit</button>
-</div>
-
-<div class="bid-card">
-  <h3>Multi Variable Bid</h3>
-  <input id="price" type="number" placeholder="Price">
-  <input id="points" type="number" placeholder="Points">
-  <button onclick="submitBid('multi', {price:price.value, points:points.value})">
-    Submit
-  </button>
-</div>
-
-<script src="script.js"></script>
 <script>
-  startAuctionTimer(5);
+  document.getElementById("userEmail").innerText =
+    localStorage.getItem("currentUser");
 </script>
+
 </body>
 </html>

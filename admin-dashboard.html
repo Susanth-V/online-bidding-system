@@ -5,7 +5,8 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body onload="loadAdminStats(); loadCharts();">
+
+<body onload="loadAdminStats(); loadCharts(); startTimer();">
 
 <h2>Admin Dashboard</h2>
 
@@ -19,7 +20,12 @@
   <p id="bids"></p>
 </div>
 
-<canvas id="bidChart" width="400"></canvas>
+<div class="admin-card">
+  <h3>Countdown Timer</h3>
+  <p id="timer"></p>
+</div>
+
+<canvas id="bidChart" width="350"></canvas>
 
 <script src="script.js"></script>
 </body>
