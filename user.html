@@ -1,23 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>User Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+<header>
+    <h1>User Auction Panel</h1>
+</header>
 
-<h2>User Login (OTP Demo)</h2>
-
-<input id="email" placeholder="Enter Email">
-<button onclick="sendOTP()">Send OTP</button>
-
-<input id="otp" placeholder="Enter OTP">
-<button onclick="verifyOTP()">Verify</button>
-
-<hr>
-
-<h2>Auctions</h2>
-<div id="auctions"></div>
+<section id="userPanel" class="auction-container"></section>
+<canvas id="confetti"></canvas>
 
 <script src="script.js"></script>
 </body>
