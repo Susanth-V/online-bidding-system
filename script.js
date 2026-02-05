@@ -1,60 +1,64 @@
-/***********************
- USER LOGIN
-************************/
-function userLogin() {
-  const email = document.getElementById("email")?.value;
-  const pass = document.getElementById("pass")?.value;
+// ===== ADMIN CREDENTIALS =====
+const ADMIN_USER = "preesuzz";
+const ADMIN_PASS = "50shadesofdaa";
 
-  if (!email || !pass) {
-    showError("Please enter all fields");
-    return;
-  }
+// ===== OTP SIMULATION =====
+let generatedOTP;
 
-  let users = JSON.parse(localStorage.getItem("users") || "[]");
+function sendOTP() {
+    generatedOTP = Math.floor(100000 + Math.random() * 900000);
+    alert("Demo OTP: " + generatedOTP);
+}
 
-  if (!users.includes(email)) {
-    users.push(email);
+function verifyOTP() {
+    if (document.getElementById("otp").value == generatedOTP) {
+        saveUser();
+        loadAuctions();
+        alert("Login successful");
+    } else alert("Invalid OTP");
+}
+
+// ===== USER STORAGE =====
+function saveUser() {
+    let users = JSON.parse(localStorage.getItem("users") || "[]");
+    users.push({ email: document.getElementById("email").value });
     localStorage.setItem("users", JSON.stringify(users));
-  }
-
-  localStorage.setItem("currentUser", email);
-  window.location.href = "user-dashboard.html";
 }
 
-/***********************
- ADMIN LOGIN
-************************/
+// ===== AUCTIONS =====
+const auctions = [
+    { type: "Highest Bid", best: 0 },
+    { type: "Lowest Bid", best: Infinity },
+    { type: "Secret Bid", bids: [] },
+    { type: "Multi Variable", bestScore: 0 }
+];
+
+function loadAuctions() {
+    const div = document.getElementById("auctions");
+    auctions.forEach((a,i)=>{
+        div.innerHTML += `<p>${a.type}</p>
+        <input placeholder="Bid">
+        <button onclick="placeBid(${i})">Bid</button><hr>`;
+    });
+}
+
+function placeBid(i) {
+    let bids = JSON.parse(localStorage.getItem("bids") || "[]");
+    bids.push({ auction:i });
+    localStorage.setItem("bids", JSON.stringify(bids));
+    alert("Bid placed");
+}
+
+// ===== ADMIN =====
 function adminLogin() {
-  const user = document.getElementById("user")?.value;
-  const pass = document.getElementById("pass")?.value;
-
-  if (user === "preesuzz" && pass === "50sodaa") {
-    localStorage.setItem("adminLoggedIn", "true");
-    window.location.href = "admin-dashboard.html";
-  } else {
-    showError("Invalid admin credentials");
-  }
+    if (
+        adminUser.value === ADMIN_USER &&
+        adminPass.value === ADMIN_PASS
+    ) {
+        adminPanel.classList.remove("hidden");
+        document.getElementById("userCount").innerText =
+            "Users: " + JSON.parse(localStorage.getItem("users")||"[]").length;
+        document.getElementById("bidCount").innerText =
+            "Bids: " + JSON.parse(localStorage.getItem("bids")||"[]").length;
+    } else alert("Invalid admin credentials");
 }
-
-/***********************
- ERROR DISPLAY
-************************/
-function showError(msg) {
-  const err = document.getElementById("error");
-  if (err) {
-    err.innerText = msg;
-    err.style.color = "red";
-  }
-}
-
-/***********************
- BID HANDLING
-************************/
-function submitBid(type, values) {
-  let bids = JSON.parse(localStorage.getItem("bids") || "[]");
-
-  bids.push({
-    user: localStorage.getItem("currentUser"),
-    type: type,
-    values: values,
-    time: new Da

@@ -1,63 +1,35 @@
 body {
-  margin: 0;
-  font-family: Arial;
-  background: #f4f6f9;
-  text-align: center;
+    font-family: Poppins, sans-serif;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    color: white;
+    text-align: center;
 }
 
-.title {
-  margin-top: 50px;
-  animation: fade 1.5s;
-}
-
-.login-container {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  margin-top: 80px;
-}
-
-.card {
-  width: 220px;
-  height: 150px;
-  border-radius: 15px;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.4s;
-}
-
-.card:hover {
-  transform: scale(1.1);
-}
-
-.user { background: linear-gradient(45deg, #00c6ff, #0072ff); }
-.admin { background: linear-gradient(45deg, #ff512f, #dd2476); }
-
-.login-bg {
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-box {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  width: 300px;
-  animation: fade 1s;
-}
-
-.login-box input, button {
-  width: 100%;
-  margin: 10px 0;
-  padding: 10px;
+.home-card {
+    margin-top: 120px;
+    animation: fadeIn 1s ease;
 }
 
 button {
-  background: #00c6ff;
-  border: n
+    padding: 12px 20px;
+    margin: 10px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.pulse {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    margin: auto;
+    animation: pulse 1.5s infinite;
+}
+
+.hidden { display:none; }
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity:1; }
+    100% { transform: scale(2); opacity:0; }
+}
