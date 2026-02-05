@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Online Bidding System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Online Bidding System</h1>
+    <div class="top-actions">
+        <button onclick="showUser()">User Panel</button>
+        <button onclick="showAdminLogin()">Admin Panel</button>
+    </div>
+</header>
+
+<!-- USER PANEL -->
+<section id="userPanel" class="auction-container"></section>
+
+<!-- ADMIN LOGIN -->
+<section id="adminLogin" class="admin hidden">
+    <h2>Admin Login</h2>
+    <input id="adminUser" placeholder="Username">
+    <input id="adminPass" type="password" placeholder="Password">
+    <button onclick="adminLogin()">Login</button>
+    <p id="loginError"></p>
+</section>
+
+<!-- ADMIN PANEL -->
+<section id="adminPanel" class="admin hidden">
+    <h2>Admin Dashboard</h2>
+    <div id="adminData"></div>
+</section>
+
+<canvas id="confetti"></canvas>
+
+<script src="script.js"></script>
+</body>
+</html>
