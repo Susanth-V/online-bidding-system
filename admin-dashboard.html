@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body onload="loadAdminStats(); loadCharts();">
+
+<h2>Admin Dashboard</h2>
+
+<div class="admin-card">
+  <h3>Total Users</h3>
+  <p id="users"></p>
+</div>
+
+<div class="admin-card">
+  <h3>Total Bids</h3>
+  <p id="bids"></p>
+</div>
+
+<canvas id="bidChart" width="400"></canvas>
+
+<script src="script.js"></script>
+</body>
+</html>
