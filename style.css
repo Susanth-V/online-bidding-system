@@ -1,90 +1,35 @@
-* {
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
 body {
-    margin: 0;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    min-height: 100vh;
-}
-
-header {
+    font-family: Poppins, sans-serif;
+    background: linear-gradient(135deg,#667eea,#764ba2);
     color: white;
-    padding: 20px;
     text-align: center;
 }
 
-.top-actions button {
-    margin: 5px;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.auction-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 30px;
-}
-
-.card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-    transition: transform 0.3s;
-}
-
-.card:hover {
-    transform: translateY(-6px);
-}
-
-.type {
-    font-size: 13px;
-    font-weight: 600;
-    color: #764ba2;
-}
-
-.timer {
-    color: #e74c3c;
-    font-weight: 600;
-}
-
-input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 8px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+.home-card {
+    margin-top: 120px;
+    animation: fadeIn 1s ease;
 }
 
 button {
-    margin-top: 10px;
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 12px 20px;
+    margin: 10px;
+    border-radius: 10px;
     border: none;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
     cursor: pointer;
 }
 
-.admin {
+.pulse {
+    width: 20px;
+    height: 20px;
     background: white;
-    margin: 30px;
-    padding: 25px;
-    border-radius: 16px;
+    border-radius: 50%;
+    margin: auto;
+    animation: pulse 1.5s infinite;
 }
 
-.hidden {
-    display: none;
-}
+.hidden { display:none; }
 
-canvas {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
+@keyframes pulse {
+    0% { transform: scale(1); opacity:1; }
+    100% { transform: scale(2); opacity:0; }
 }
