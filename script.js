@@ -1,180 +1,105 @@
-// ================= CONFIG =================
-const ADMIN_USER = "preesuzz";
-const ADMIN_PASS = "50shadesofdaa";
+// ADMIN CREDENTIALS
+const ADMIN_EMAIL = "admin@auction.com";
+const ADMIN_OTP = "999999";
 
-// ================= DATA ===================
-let auctions = JSON.parse(localStorage.getItem("auctions")) || [
-  {
-    id: 1,
-    name: "Antique Vase",
-    bids: {
-      highest: { time: 60, list: [] },
-      lowest:  { time: 60, list: [] },
-      secret:  { time: 60, list: [] },
-      multi:   { time: 60, list: [] }
-    }
+let bids = [];
+
+// LOGIN FUNCTION
+function login() {
+  const email = document.getElementById("email").value;
+  const otp = document.getElementById("otp").value;
+
+  document.getElementById("loginBox").style.display = "none";
+
+  // ✅ ADMIN CHECK FIRST
+  if (email === ADMIN_EMAIL && otp === ADMIN_OTP) {
+    document.getElementById("adminPanel").style.display = "block";
+  } else {
+    document.getElementById("userPanel").style.display = "block";
+    loadUserBids(email);
   }
-];
-
-// ================= SAFE DOM LOAD =================
-document.addEventListener("DOMContentLoaded", () => {
-
-    // ---------- LOGIN PAGE ----------
-    if (document.getElementById("username")) {
-        window.login = function () {
-            const u = username.value.trim();
-            const p = password.value.trim();
-
-            if (u === ADMIN_USER && p === ADMIN_PASS) {
-                localStorage.setItem("role", "admin");
-                location.href = "admin.html";
-            }
-            else if (u.length > 0) {
-                localStorage.setItem("role", "user");
-                localStorage.setItem("currentUser", u);
-                location.href = "user.html";
-            }
-            else {
-                loginError.textContent = "Invalid login";
-            }
-        };
-    }
-
-    // ---------- USER PANEL ----------
-    const userPanel = document.getElementById("userPanel");
-    if (userPanel) {
-        if (localStorage.getItem("role") !== "user") {
-            location.href = "index.html";
-            return;
-        }
-        renderUser();
-    }
-
-    // ---------- ADMIN PANEL ----------
-    const adminData = document.getElementById("adminData");
-    if (adminData) {
-        if (localStorage.getItem("role") !== "admin") {
-            location.href = "index.html";
-            return;
-        }
-        renderAdmin();
-    }
-});
-
-// ================= USER PANEL =================
-function renderUser() {
-    userPanel.innerHTML = "";
-    auctions.forEach(a => {
-        userPanel.innerHTML += `
-        <div class="card">
-            <h3>${a.name}</h3>
-
-            <p class="timer">Highest (<span id="ht-${a.id}">${a.bids.highest.time}</span>s)</p>
-            <input id="h-${a.id}" type="number" placeholder="Highest price">
-
-            <p class="timer">Lowest (<span id="lt-${a.id}">${a.bids.lowest.time}</span>s)</p>
-            <input id="l-${a.id}" type="number" placeholder="Lowest price">
-
-            <p class="timer">Secret (<span id="st-${a.id}">${a.bids.secret.time}</span>s)</p>
-            <input id="s-${a.id}" type="number" placeholder="Secret price">
-
-            <p class="timer">Multi (<span id="mt-${a.id}">${a.bids.multi.time}</span>s)</p>
-            <input id="mp-${a.id}" type="number" placeholder="Price">
-            <input id="pt-${a.id}" type="number" placeholder="Points">
-
-            <button onclick="placeBids(${a.id})">Submit</button>
-        </div>`;
-    });
 }
 
-function placeBids(id) {
-    const user = localStorage.getItem("currentUser");
-    const a = auctions.find(x => x.id === id);
+// LOAD USER BIDS UI
+function loadUserBids(username) {
+  const container = document.getElementById("bidContainer");
 
-    const hb = +document.getElementById(`h-${id}`).value;
-    const lb = +document.getElementById(`l-${id}`).value;
-    const sb = +document.getElementById(`s-${id}`).value;
-    const mp = +document.getElementById(`mp-${id}`).value;
-    const pt = +document.getElementById(`pt-${id}`).value;
+  container.innerHTML = `
+    <div class="bidCard">
+      <h3>Highest Bid</h3>
+      <input type="number" id="highBid">
+      <span id="timer1"></span>
+      <button onclick="submitBid('${username}','Highest','highBid')">Submit</button>
+    </div>
 
-    if (hb && a.bids.highest.time > 0)
-        a.bids.highest.list.push({ user, price: hb });
+    <div class="bidCard">
+      <h3>Lowest Bid</h3>
+      <input type="number" id="lowBid">
+      <span id="timer2"></span>
+      <button onclick="submitBid('${username}','Lowest','lowBid')">Submit</button>
+    </div>
 
-    if (lb && a.bids.lowest.time > 0)
-        a.bids.lowest.list.push({ user, price: lb });
+    <div class="bidCard">
+      <h3>Secret Bid</h3>
+      <input type="number" id="secretBid">
+      <span id="timer3"></span>
+      <button onclick="submitBid('${username}','Secret','secretBid')">Submit</button>
+    </div>
 
-    if (sb && a.bids.secret.time > 0)
-        a.bids.secret.list.push({ user, price: sb });
+    <div class="bidCard">
+      <h3>Multi-variable Bid (Price + Points)</h3>
+      <input type="number" id="multiPrice" placeholder="Price">
+      <input type="number" id="multiPoints" placeholder="Points">
+      <span id="timer4"></span>
+      <button onclick="submitMultiBid('${username}')">Submit</button>
+    </div>
+  `;
 
-    if (mp && pt && a.bids.multi.time > 0)
-        a.bids.multi.list.push({ user, score: mp + pt });
-
-    localStorage.setItem("auctions", JSON.stringify(auctions));
-    confetti();
+  startTimer("timer1", 30);
+  startTimer("timer2", 30);
+  startTimer("timer3", 30);
+  startTimer("timer4", 30);
 }
 
-// ================= TIMERS =================
-setInterval(() => {
-    auctions.forEach(a => {
-        Object.values(a.bids).forEach(b => {
-            if (b.time > 0) b.time--;
-        });
+// TIMER
+function startTimer(id, seconds) {
+  let time = seconds;
+  const el = document.getElementById(id);
 
-        ["highest","lowest","secret","multi"].forEach((k,i)=>{
-            const ids = ["ht","lt","st","mt"];
-            const t = document.getElementById(`${ids[i]}-${a.id}`);
-            if (t) t.textContent = a.bids[k].time;
-        });
-    });
-    localStorage.setItem("auctions", JSON.stringify(auctions));
-}, 1000);
-
-// ================= ADMIN PANEL =================
-function getWinners(b) {
-    return {
-        highest: b.highest.list.sort((a,b)=>b.price-a.price)[0],
-        lowest:  b.lowest.list.sort((a,b)=>a.price-b.price)[0],
-        secret:  b.secret.list.sort((a,b)=>b.price-a.price)[1],
-        multi:   b.multi.list.sort((a,b)=>b.score-a.score)[0]
-    };
-}
-
-function renderAdmin() {
-    adminData.innerHTML = "";
-    let users = new Set();
-
-    auctions.forEach(a => {
-        const w = getWinners(a.bids);
-
-        adminData.innerHTML += `
-        <div class="card">
-            <h3>${a.name}</h3>
-            <p><b>Highest:</b> ${w.highest?.user || "-"} | ₹${w.highest?.price || "-"}</p>
-            <p><b>Lowest:</b> ${w.lowest?.user || "-"} | ₹${w.lowest?.price || "-"}</p>
-            <p><b>Secret:</b> ${w.secret?.user || "-"} | ₹${w.secret?.price || "-"}</p>
-            <p><b>Multi:</b> ${w.multi?.user || "-"} | Score ${w.multi?.score || "-"}</p>
-        </div><hr>`;
-
-        Object.values(a.bids).forEach(b =>
-            b.list.forEach(x => users.add(x.user))
-        );
-    });
-
-    totalUsers.textContent = users.size;
-}
-
-// ================= CONFETTI =================
-const canvas = document.getElementById("confetti");
-if (canvas) {
-    const ctx = canvas.getContext("2d");
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-
-    function confetti() {
-        for (let i = 0; i < 120; i++) {
-            ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
-            ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 6, 6);
-        }
-        setTimeout(() => ctx.clearRect(0,0,canvas.width,canvas.height), 600);
+  const interval = setInterval(() => {
+    el.innerText = ` ⏳ ${time}s`;
+    time--;
+    if (time < 0) {
+      clearInterval(interval);
+      el.innerText = " Closed";
     }
+  }, 1000);
+}
+
+// SUBMIT BID
+function submitBid(user, type, inputId) {
+  const value = document.getElementById(inputId).value;
+  bids.push({ user, type, value: Number(value) });
+  alert(type + " bid submitted");
+}
+
+// MULTI BID
+function submitMultiBid(user) {
+  const price = Number(document.getElementById("multiPrice").value);
+  const points = Number(document.getElementById("multiPoints").value);
+  bids.push({ user, type: "Multi", value: price + points });
+  alert("Multi bid submitted");
+}
+
+// ADMIN – WINNER
+function calculateWinner() {
+  if (bids.length === 0) return;
+
+  let winner = bids.reduce((a, b) => b.value > a.value ? b : a);
+
+  document.getElementById("winnerBox").innerHTML = `
+    <h3>Winner</h3>
+    <p>User: ${winner.user}</p>
+    <p>Winning Value: ${winner.value}</p>
+  `;
 }

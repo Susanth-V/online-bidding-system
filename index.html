@@ -1,28 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Login | Online Bidding</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <title>Auction System</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-<header>
-    <h1>Online Bidding System</h1>
-</header>
 
-<section class="admin">
-    <h2>Login</h2>
+<!-- LOGIN -->
+<div id="loginBox">
+  <h2>Login</h2>
+  <input type="text" id="Username" placeholder="Username">
+  <input type="text" id="otp" placeholder="OTP">
+  <button onclick="login()">Login</button>
+</div>
 
-    <div style="max-width:320px;margin:auto;">
-        <input id="username" placeholder="Username">
-        <input id="password" type="password" placeholder="Password">
-        <button onclick="login()">Login</button>
-        <p id="loginError"></p>
-    </div>
-</section>
+<!-- USER PANEL -->
+<div id="userPanel" class="hidden">
+  <h1>User Auction Panel</h1>
+  <div id="bidContainer"></div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="hidden">
+  <h1>Admin Panel</h1>
+  <button onclick="calculateWinner()">Show Winner</button>
+  <div id="winnerBox"></div>
+</div>
 
 <script src="script.js"></script>
 </body>
