@@ -1,59 +1,47 @@
 body {
-  margin: 0;
+  background: linear-gradient(120deg,#6a7bd1,#7e5bb7);
   font-family: Arial;
-  background: linear-gradient(120deg, #6a7bd1, #7e5db6);
   color: white;
 }
 
-h1 {
-  text-align: center;
-}
+h1 { text-align:center; }
 
 .center {
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
 
 .login-box {
-  background: #3e3a6f;
-  padding: 25px;
-  border-radius: 10px;
-  width: 280px;
+  background:#2f2f5f;
+  padding:25px;
+  border-radius:10px;
 }
 
 input, button {
-  width: 100%;
-  margin: 6px 0;
-  padding: 8px;
-  border-radius: 5px;
-  border: none;
+  width:100%;
+  padding:8px;
+  margin-top:8px;
+  border-radius:5px;
+  border:none;
 }
 
 button {
-  background: #ffd86b;
-  cursor: pointer;
+  background:#ffd966;
+  cursor:pointer;
 }
 
 .grid {
-  display: grid;
+  display:grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  padding: 20px;
+  gap:15px;
+  padding:20px;
 }
 
 .card {
-  background: rgba(0,0,0,0.25);
-  padding: 15px;
-  border-radius: 10px;
-  font-size: 14px;
-}
-
-.timer {
-  font-weight: bold;
-}
-
-#winner {
-  margin-top: 5px;
+  background:#3c3c78;
+  padding:15px;
+  border-radius:10px;
+  font-size:14px;
 }
