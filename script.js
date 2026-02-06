@@ -1,10 +1,10 @@
-console.log("JS LOADED");
+console.log("SMART CITY BIDDING SYSTEM LOADED");
 
 // ================= CONFIG =================
 const ADMIN_USER = "preesuzz";
 const ADMIN_PASS = "50shadesofdaa";
 
-// ================= AUCTION DATA =================
+// ================= INIT DATA =================
 let auctions = JSON.parse(localStorage.getItem("auctions"));
 
 if (!auctions) {
@@ -14,7 +14,7 @@ if (!auctions) {
       title: "Advertisement Rights Auction",
       type: "highest",
       desc: "Highest Bid → Winner: Highest Price",
-      time: 60,
+      time: Math.floor(Math.random() * 61) + 60,
       bids: [],
       ended: false
     },
@@ -23,7 +23,7 @@ if (!auctions) {
       title: "Road Construction Tender",
       type: "lowest",
       desc: "Lowest Bid → Winner: Lowest Price",
-      time: 60,
+      time: Math.floor(Math.random() * 61) + 60,
       bids: [],
       ended: false
     },
@@ -32,7 +32,7 @@ if (!auctions) {
       title: "Spectrum Allocation",
       type: "secret",
       desc: "Second Secret Bid → Winner: Second Highest",
-      time: 60,
+      time: Math.floor(Math.random() * 61) + 60,
       bids: [],
       ended: false
     },
@@ -40,8 +40,8 @@ if (!auctions) {
       id: 4,
       title: "EV Charging Station Contract",
       type: "multi",
-      desc: "Multi-Variable → Score = Price + Points",
-      time: 60,
+      desc: "Score = Price + Technical Points",
+      time: Math.floor(Math.random() * 61) + 60,
       bids: [],
       ended: false
     }
@@ -67,29 +67,25 @@ function login() {
 
 // ================= USER PANEL =================
 const userPanel = document.getElementById("userPanel");
-if (userPanel) renderUser();
+if (userPanel) renderUserPanel();
 
-function renderUser() {
+function renderUserPanel() {
   userPanel.innerHTML = "";
 
   auctions.forEach(a => {
-    let inputs = "";
-
-    if (a.type !== "multi") {
-      inputs = `<input type="number" id="price-${a.id}" placeholder="Enter Price (₹)">`;
-    } else {
-      inputs = `
-        <input type="number" id="price-${a.id}" placeholder="Enter Price (₹)">
-        <input type="number" id="points-${a.id}" placeholder="Enter Technical Points">
-      `;
-    }
+    let inputs = a.type === "multi"
+      ? `
+        <input type="number" id="price-${a.id}" placeholder="Price (₹)">
+        <input type="number" id="points-${a.id}" placeholder="Technical Points">
+      `
+      : `<input type="number" id="price-${a.id}" placeholder="Price (₹)">`;
 
     userPanel.innerHTML += `
       <div class="card">
         <h3>${a.title}</h3>
         <p>${a.desc}</p>
 
-        <div class="timer" id="timer-${a.id}">Time: ${a.time}s</div>
+        <div class="timer" id="timer-${a.id}">Time Left: ${a.time}s</div>
         <div id="winner-${a.id}"><b>Current Winner:</b> —</div>
 
         ${inputs}
@@ -106,7 +102,7 @@ function placeBid(id) {
   if (auction.ended) return;
 
   const user = localStorage.getItem("currentUser");
-  const price = +document.getElementById(`price-${id}`)?.value || 0;
+  const price = +document.getElementById(`price-${id}`).value || 0;
   const points = +document.getElementById(`points-${id}`)?.value || 0;
 
   auction.bids.push({ user, price, points });
@@ -115,35 +111,39 @@ function placeBid(id) {
   updateWinner(id);
 }
 
-// ================= WINNER LOGIC =================
+// ================= WINNER CALCULATION =================
+function getWinner(a) {
+  if (a.bids.length === 0) return null;
+
+  if (a.type === "highest")
+    return a.bids.sort((x,y)=>y.price-x.price)[0];
+
+  if (a.type === "lowest")
+    return a.bids.sort((x,y)=>x.price-y.price)[0];
+
+  if (a.type === "secret") {
+    const sorted = a.bids.sort((x,y)=>y.price-x.price);
+    return sorted[1] || null;
+  }
+
+  if (a.type === "multi")
+    return a.bids.sort(
+      (x,y)=>(y.price+y.points)-(x.price+x.points)
+    )[0];
+}
+
+// ================= UPDATE WINNER =================
 function updateWinner(id) {
   const auction = auctions.find(a => a.id === id);
-  let winner = "—";
-
-  if (auction.type === "highest") {
-    const w = auction.bids.sort((a,b)=>b.price-a.price)[0];
-    if (w) winner = `${w.user} (₹${w.price})`;
-  }
-
-  if (auction.type === "lowest") {
-    const w = auction.bids.sort((a,b)=>a.price-b.price)[0];
-    if (w) winner = `${w.user} (₹${w.price})`;
-  }
-
-  if (auction.type === "secret") {
-    const sorted = auction.bids.sort((a,b)=>b.price-a.price);
-    if (sorted[1]) winner = `${sorted[1].user} (₹${sorted[1].price})`;
-  }
-
-  if (auction.type === "multi") {
-    const w = auction.bids.sort(
-      (a,b)=>(b.price+b.points)-(a.price+a.points)
-    )[0];
-    if (w) winner = `${w.user} (Score: ${w.price + w.points})`;
-  }
+  const w = getWinner(auction);
 
   document.getElementById(`winner-${id}`).innerHTML =
-    `<b>${auction.ended ? "Final Winner" : "Current Winner"}:</b> ${winner}`;
+    `<b>${auction.ended ? "Final Winner" : "Current Winner"}:</b> ${
+      w ? w.user + " (" +
+      (auction.type === "multi"
+        ? "Score: " + (w.price + w.points)
+        : "₹" + w.price) + ")" : "—"
+    }`;
 }
 
 // ================= TIMER =================
@@ -151,7 +151,8 @@ setInterval(() => {
   auctions.forEach(a => {
     if (!a.ended && a.time > 0) {
       a.time--;
-      document.getElementById(`timer-${a.id}`).innerText = `Time: ${a.time}s`;
+      document.getElementById(`timer-${a.id}`).innerText =
+        `Time Left: ${a.time}s`;
 
       if (a.time === 0) {
         a.ended = true;
@@ -163,3 +164,39 @@ setInterval(() => {
 
   localStorage.setItem("auctions", JSON.stringify(auctions));
 }, 1000);
+
+// ================= ADMIN PANEL =================
+const adminData = document.getElementById("adminData");
+if (adminData) renderAdminPanel();
+
+function renderAdminPanel() {
+  adminData.innerHTML = "";
+  let users = new Set();
+
+  auctions.forEach(a => {
+    a.bids.forEach(b => users.add(b.user));
+    const w = getWinner(a);
+
+    adminData.innerHTML += `
+      <div class="card">
+        <h3>${a.title}</h3>
+
+        <p><b>All Bids:</b></p>
+        ${a.bids.map(b =>
+          `${b.user} → ₹${b.price}` +
+          (a.type === "multi" ? ` + ${b.points}` : "")
+        ).join("<br>") || "No bids yet"}
+
+        <hr>
+        <p><b>Winner:</b> ${
+          w ? w.user + " (" +
+          (a.type === "multi"
+            ? "Score: " + (w.price + w.points)
+            : "₹" + w.price) + ")" : "—"
+        }</p>
+      </div>
+    `;
+  });
+
+  document.getElementById("userCount").innerText = users.size;
+}
