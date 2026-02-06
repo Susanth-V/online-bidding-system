@@ -1,10 +1,10 @@
 console.log("SMART CITY BIDDING SYSTEM LOADED");
 
-// ================= CONFIG =================
+// ================= ADMIN CONFIG =================
 const ADMIN_USER = "preesuzz";
 const ADMIN_PASS = "50shadesofdaa";
 
-// ================= INIT DATA =================
+// ================= INITIAL DATA =================
 let auctions = JSON.parse(localStorage.getItem("auctions"));
 
 if (!auctions) {
@@ -12,36 +12,36 @@ if (!auctions) {
     {
       id: 1,
       title: "Advertisement Rights Auction",
-      type: "highest",
       desc: "Highest Bid → Winner: Highest Price",
-      time: Math.floor(Math.random() * 61) + 60,
+      type: "highest",
+      time: randomTime(),
       bids: [],
       ended: false
     },
     {
       id: 2,
       title: "Road Construction Tender",
-      type: "lowest",
       desc: "Lowest Bid → Winner: Lowest Price",
-      time: Math.floor(Math.random() * 61) + 60,
+      type: "lowest",
+      time: randomTime(),
       bids: [],
       ended: false
     },
     {
       id: 3,
       title: "Spectrum Allocation",
-      type: "secret",
       desc: "Second Secret Bid → Winner: Second Highest",
-      time: Math.floor(Math.random() * 61) + 60,
+      type: "secret",
+      time: randomTime(),
       bids: [],
       ended: false
     },
     {
       id: 4,
       title: "EV Charging Station Contract",
-      type: "multi",
       desc: "Score = Price + Technical Points",
-      time: Math.floor(Math.random() * 61) + 60,
+      type: "multi",
+      time: randomTime(),
       bids: [],
       ended: false
     }
@@ -61,25 +61,18 @@ function login() {
     localStorage.setItem("currentUser", u);
     location.href = "user.html";
   } else {
-    loginError.innerText = "Invalid login";
+    loginError.innerText = "Invalid Login";
   }
 }
 
 // ================= USER PANEL =================
 const userPanel = document.getElementById("userPanel");
-if (userPanel) renderUserPanel();
+if (userPanel) renderUser();
 
-function renderUserPanel() {
+function renderUser() {
   userPanel.innerHTML = "";
 
   auctions.forEach(a => {
-    let inputs = a.type === "multi"
-      ? `
-        <input type="number" id="price-${a.id}" placeholder="Price (₹)">
-        <input type="number" id="points-${a.id}" placeholder="Technical Points">
-      `
-      : `<input type="number" id="price-${a.id}" placeholder="Price (₹)">`;
-
     userPanel.innerHTML += `
       <div class="card">
         <h3>${a.title}</h3>
@@ -88,7 +81,11 @@ function renderUserPanel() {
         <div class="timer" id="timer-${a.id}">Time Left: ${a.time}s</div>
         <div id="winner-${a.id}"><b>Current Winner:</b> —</div>
 
-        ${inputs}
+        <input id="price-${a.id}" type="number" placeholder="Price (₹)">
+        ${a.type === "multi"
+          ? `<input id="points-${a.id}" type="number" placeholder="Technical Points">`
+          : ""
+        }
 
         <button id="btn-${a.id}" onclick="placeBid(${a.id})">Submit Bid</button>
       </div>
@@ -111,38 +108,39 @@ function placeBid(id) {
   updateWinner(id);
 }
 
-// ================= WINNER CALCULATION =================
+// ================= WINNER LOGIC =================
 function getWinner(a) {
   if (a.bids.length === 0) return null;
 
   if (a.type === "highest")
-    return a.bids.sort((x,y)=>y.price-x.price)[0];
+    return [...a.bids].sort((x,y)=>y.price-x.price)[0];
 
   if (a.type === "lowest")
-    return a.bids.sort((x,y)=>x.price-y.price)[0];
+    return [...a.bids].sort((x,y)=>x.price-y.price)[0];
 
   if (a.type === "secret") {
-    const sorted = a.bids.sort((x,y)=>y.price-x.price);
-    return sorted[1] || null;
+    const s = [...a.bids].sort((x,y)=>y.price-x.price);
+    return s[1] || null;
   }
 
   if (a.type === "multi")
-    return a.bids.sort(
+    return [...a.bids].sort(
       (x,y)=>(y.price+y.points)-(x.price+x.points)
     )[0];
 }
 
 // ================= UPDATE WINNER =================
 function updateWinner(id) {
-  const auction = auctions.find(a => a.id === id);
-  const w = getWinner(auction);
+  const a = auctions.find(x => x.id === id);
+  const w = getWinner(a);
 
   document.getElementById(`winner-${id}`).innerHTML =
-    `<b>${auction.ended ? "Final Winner" : "Current Winner"}:</b> ${
+    `<b>${a.ended ? "Final Winner" : "Current Winner"}:</b> ${
       w ? w.user + " (" +
-      (auction.type === "multi"
+      (a.type === "multi"
         ? "Score: " + (w.price + w.points)
-        : "₹" + w.price) + ")" : "—"
+        : "₹" + w.price) + ")"
+      : "—"
     }`;
 }
 
@@ -161,17 +159,16 @@ setInterval(() => {
       }
     }
   });
-
   localStorage.setItem("auctions", JSON.stringify(auctions));
 }, 1000);
 
 // ================= ADMIN PANEL =================
 const adminData = document.getElementById("adminData");
-if (adminData) renderAdminPanel();
+if (adminData) renderAdmin();
 
-function renderAdminPanel() {
-  adminData.innerHTML = "";
+function renderAdmin() {
   let users = new Set();
+  adminData.innerHTML = "";
 
   auctions.forEach(a => {
     a.bids.forEach(b => users.add(b.user));
@@ -185,18 +182,24 @@ function renderAdminPanel() {
         ${a.bids.map(b =>
           `${b.user} → ₹${b.price}` +
           (a.type === "multi" ? ` + ${b.points}` : "")
-        ).join("<br>") || "No bids yet"}
+        ).join("<br>") || "No bids"}
 
         <hr>
         <p><b>Winner:</b> ${
           w ? w.user + " (" +
           (a.type === "multi"
             ? "Score: " + (w.price + w.points)
-            : "₹" + w.price) + ")" : "—"
+            : "₹" + w.price) + ")"
+          : "—"
         }</p>
       </div>
     `;
   });
 
   document.getElementById("userCount").innerText = users.size;
+}
+
+// ================= UTIL =================
+function randomTime() {
+  return Math.floor(Math.random() * 61) + 60; // 60–120 sec
 }

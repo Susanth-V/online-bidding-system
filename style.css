@@ -1,52 +1,59 @@
 body {
-  font-family: Arial;
-  background: linear-gradient(120deg,#667eea,#764ba2);
-  color: white;
   margin: 0;
-  padding: 20px;
+  font-family: Arial;
+  background: linear-gradient(120deg, #6a7bd1, #7e5db6);
+  color: white;
+}
+
+h1 {
+  text-align: center;
+}
+
+.center {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  background: #3e3a6f;
+  padding: 25px;
+  border-radius: 10px;
+  width: 280px;
+}
+
+input, button {
+  width: 100%;
+  margin: 6px 0;
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+}
+
+button {
+  background: #ffd86b;
+  cursor: pointer;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
+  padding: 20px;
 }
 
 .card {
   background: rgba(0,0,0,0.25);
-  padding: 12px;
+  padding: 15px;
   border-radius: 10px;
   font-size: 14px;
 }
 
-input {
-  width: 100%;
-  padding: 6px;
-  margin: 4px 0;
-  font-size: 13px;
-}
-
-button {
-  padding: 6px;
-  width: 100%;
-  margin-top: 6px;
-}
-
 .timer {
   font-weight: bold;
-  margin-bottom: 6px;
 }
 
-.login-box {
-  background: rgba(0,0,0,0.25);
-  padding: 25px;
-  border-radius: 10px;
-  width: 260px;
-}
-
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+#winner {
+  margin-top: 5px;
 }
