@@ -1,30 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Admin Panel</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+body {
+  font-family: Arial;
+  padding: 30px;
+  background: #f4f6f9;
+}
 
-<h1 class="title">ADMIN PANEL</h1>
+h1 {
+  color: #333;
+}
 
-<div class="login-box" style="width:90%">
+input, select, button {
+  padding: 8px;
+  margin: 6px 0;
+}
 
-  <h2>Total Users</h2>
-  <p id="users"></p>
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
 
-  <hr>
-
-  <h2>All Bids</h2>
-  <pre id="bids"></pre>
-
-  <hr>
-
-  <h2>Winners</h2>
-  <pre id="winners"></pre>
-
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
+pre {
+  background: #111;
+  color: #0f0;
+  padding: 15px;
+}

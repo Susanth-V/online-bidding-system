@@ -1,107 +1,89 @@
-/* ================= ADMIN LOGIN ================= */
-const ADMIN_USER = "preesuzz";
-const ADMIN_PASS = "50sodaa";
+// ---------- GLOBAL STORAGE ----------
+let bids = JSON.parse(localStorage.getItem("bids")) || [];
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let winners = JSON.parse(localStorage.getItem("winners")) || {};
 
-function adminLogin() {
-  if (
-    adminUser.value === ADMIN_USER &&
-    adminPass.value === ADMIN_PASS
-  ) {
-    localStorage.setItem("isAdmin", "true");
-    window.location = "admin.html";
-  } else alert("Invalid Admin Credentials");
-}
+const AUCTION_TIME = Math.floor(Math.random() * 20) + 20; // random timer
+let timeLeft = AUCTION_TIME;
 
-/* ================= USER OTP LOGIN ================= */
-let OTP;
+// ---------- TIMER ----------
+if (document.getElementById("timer")) {
+  const timer = setInterval(() => {
+    document.getElementById("timer").innerText =
+      `Time Remaining: ${timeLeft}s`;
 
-function sendOTP() {
-  OTP = Math.floor(100000 + Math.random() * 900000);
-  msg.innerText = "OTP: " + OTP;
-}
-
-function verifyOTP() {
-  if (otp.value == OTP) {
-    let users = JSON.parse(localStorage.getItem("users") || "[]");
-    users.push(email.value);
-    localStorage.setItem("users", JSON.stringify(users));
-    window.location = "user.html";
-  } else alert("Invalid OTP");
-}
-
-/* ================= STORAGE ================= */
-let bids = JSON.parse(localStorage.getItem("bids") || "{}");
-let winners = {};
-
-/* ================= BIDDING ================= */
-function bid(type, u, p) {
-  let user = document.getElementById(u).value;
-  let price = Number(document.getElementById(p).value);
-  if (!bids[type]) bids[type] = [];
-  bids[type].push({ user, price });
-  localStorage.setItem("bids", JSON.stringify(bids));
-}
-
-function bidMulti() {
-  let score = Number(p4.value) + Number(pt4.value);
-  if (!bids.multi) bids.multi = [];
-  bids.multi.push({ user: u4.value, score });
-  localStorage.setItem("bids", JSON.stringify(bids));
-}
-
-/* ================= TIMERS ================= */
-function timer(id, sec, type) {
-  let t = sec;
-  let el = document.getElementById(id);
-  let x = setInterval(() => {
-    el.innerText = "Time: " + t;
-    if (t-- <= 0) {
-      clearInterval(x);
-      declareWinner(type);
+    if (timeLeft-- <= 0) {
+      clearInterval(timer);
+      computeWinners();
+      document.getElementById("status").innerText =
+        "Bidding Closed. Winner Announced!";
     }
   }, 1000);
 }
 
-function declareWinner(type) {
-  let a = bids[type];
-  if (!a || a.length === 0) return;
+// ---------- USER BID ----------
+function placeBid() {
+  const auction = document.getElementById("auctionType").value;
+  const price = Number(document.getElementById("price").value);
+  const points = Number(document.getElementById("points").value || 0);
 
-  if (type === "highest") winners[type] = a.sort((x,y)=>y.price-x.price)[0];
-  if (type === "lowest") winners[type] = a.sort((x,y)=>x.price-y.price)[0];
-  if (type === "second" && a.length>1) winners[type] = a.sort((x,y)=>y.price-x.price)[1];
-  if (type === "multi") winners[type] = a.sort((x,y)=>y.score-x.score)[0];
+  if (!price) {
+    alert("Price required");
+    return;
+  }
+
+  const userId = "USER_" + Math.floor(Math.random() * 10000);
+  users.push(userId);
+
+  bids.push({
+    userId,
+    auction,
+    price,
+    points,
+    score: price + points
+  });
+
+  localStorage.setItem("bids", JSON.stringify(bids));
+  localStorage.setItem("users", JSON.stringify(users));
+
+  document.getElementById("status").innerText = "Bid Submitted Successfully";
+}
+
+// ---------- WINNER LOGIC ----------
+function computeWinners() {
+  const group = {
+    highest: [],
+    lowest: [],
+    second: [],
+    multi: []
+  };
+
+  bids.forEach(b => group[b.auction].push(b));
+
+  // Highest Bid
+  winners.highest = group.highest.sort((a,b)=>b.price-a.price)[0] || null;
+
+  // Lowest Bid
+  winners.lowest = group.lowest.sort((a,b)=>a.price-b.price)[0] || null;
+
+  // Second Secret Bid
+  const sorted = group.second.sort((a,b)=>b.price-a.price);
+  winners.second = sorted[1] || null;
+
+  // Multi Variable
+  winners.multi = group.multi.sort((a,b)=>b.score-a.score)[0] || null;
 
   localStorage.setItem("winners", JSON.stringify(winners));
 }
 
-/* ================= INIT ================= */
-if (location.pathname.includes("user")) {
-  timer("t1", 120, "highest");
-  timer("t2", 150, "lowest");
-  timer("t3", 180, "second");
-  timer("t4", 160, "multi");
-}
+// ---------- ADMIN PANEL ----------
+if (document.getElementById("totalUsers")) {
+  document.getElementById("totalUsers").innerText =
+    new Set(users).size;
 
-if (location.pathname.includes("admin")) {
-  if (localStorage.getItem("isAdmin") !== "true") {
-    alert("Unauthorized");
-    location.href = "index.html";
-  }
+  document.getElementById("allBids").innerText =
+    JSON.stringify(bids, null, 2);
 
-  let users = JSON.parse(localStorage.getItem("users") || "[]");
-  users.innerText = users.length;
-
-  let b = JSON.parse(localStorage.getItem("bids") || "{}");
-  let out = "";
-  for (let k in b) {
-    out += `\n${k.toUpperCase()}:\n`;
-    b[k].forEach((x,i)=>out+=`${i+1}. ${x.user} → ${x.price ?? x.score}\n`);
-  }
-  bids.innerText = out || "No bids yet";
-
-  let w = JSON.parse(localStorage.getItem("winners") || "{}");
-  let win = "";
-  for (let k in w)
-    win += `${k.toUpperCase()} → ${w[k].user} (${w[k].price ?? w[k].score})\n`;
-  winners.innerText = win || "Waiting for timers to finish";
+  document.getElementById("winners").innerText =
+    JSON.stringify(winners, null, 2);
 }

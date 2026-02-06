@@ -1,31 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Smart City Bidding Login</title>
+  <title>Smart City Vendor Bidding</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1 class="title">SMART CITY BIDDING SYSTEM</h1>
+<h1>User Bidding Panel</h1>
 
-<div class="login-box">
+<div id="timer"></div>
 
-  <h2>Admin Login</h2>
-  <input id="adminUser" placeholder="Admin Username">
-  <input id="adminPass" type="password" placeholder="Admin Password">
-  <button onclick="adminLogin()">Login as Admin</button>
+<select id="auctionType">
+  <option value="highest">Advertisement Rights (Highest Bid)</option>
+  <option value="lowest">Road Construction (Lowest Bid)</option>
+  <option value="second">Spectrum Allocation (Second Secret Bid)</option>
+  <option value="multi">EV Charging Station (Price + Points)</option>
+</select>
 
-  <hr>
+<input type="number" id="price" placeholder="Enter Price">
+<input type="number" id="points" placeholder="Technical Points (only for EV)">
 
-  <h2>User Login (OTP)</h2>
-  <input id="email" placeholder="User Email">
-  <button onclick="sendOTP()">Send OTP</button>
-  <p id="msg"></p>
+<button onclick="placeBid()">Place Bid</button>
 
-  <input id="otp" placeholder="Enter OTP">
-  <button onclick="verifyOTP()">Verify OTP</button>
-
-</div>
+<p id="status"></p>
 
 <script src="script.js"></script>
 </body>
