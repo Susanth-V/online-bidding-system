@@ -4,7 +4,7 @@ console.log("JS LOADED");
 const ADMIN_USER = "preesuzz";
 const ADMIN_PASS = "50shadesofdaa";
 
-// ================= DATA INIT (SAFE) =================
+// ================= DATA INIT =================
 let auctions = JSON.parse(localStorage.getItem("auctions"));
 
 if (!auctions) {
@@ -12,31 +12,29 @@ if (!auctions) {
     { id: 1, name: "Antique Vase", time: 120, bids: [] },
     { id: 2, name: "Construction Tender", time: 150, bids: [] }
   ];
-} else {
-  auctions.forEach(a => {
-    if (a.time === undefined) a.time = 120;
-    if (!a.bids) a.bids = [];
-  });
 }
+
+auctions.forEach(a => {
+  if (!a.bids) a.bids = [];
+  if (a.time === undefined) a.time = 120;
+});
 
 localStorage.setItem("auctions", JSON.stringify(auctions));
 
 // ================= LOGIN =================
 function login() {
-  const u = document.getElementById("username").value.trim();
-  const p = document.getElementById("password").value.trim();
+  const u = username.value.trim();
+  const p = password.value.trim();
 
   if (u === ADMIN_USER && p === ADMIN_PASS) {
     localStorage.setItem("role", "admin");
     location.href = "admin.html";
-  } 
-  else if (u !== "") {
+  } else if (u) {
     localStorage.setItem("currentUser", u);
     localStorage.setItem("role", "user");
     location.href = "user.html";
-  } 
-  else {
-    document.getElementById("loginError").innerText = "Invalid login";
+  } else {
+    loginError.innerText = "Invalid login";
   }
 }
 
@@ -48,44 +46,41 @@ function renderUser() {
   userPanel.innerHTML = "";
 
   auctions.forEach(a => {
-    const card = document.createElement("div");
-    card.className = "card";
+    userPanel.innerHTML += `
+      <div class="card">
+        <h3>${a.name}</h3>
+        <div class="timer" id="t-${a.id}">Time: ${a.time}s</div>
 
-    card.innerHTML = `
-      <h3>${a.name}</h3>
-      <div class="timer" id="t-${a.id}">Time: ${a.time}s</div>
+        <input id="hb-${a.id}" type="number" placeholder="Highest Bid (₹)">
+        <input id="lb-${a.id}" type="number" placeholder="Lowest Bid (₹)">
+        <input id="sb-${a.id}" type="number" placeholder="Secret Bid (₹)">
+        <input id="mbp-${a.id}" type="number" placeholder="Multi Price (₹)">
+        <input id="mbpt-${a.id}" type="number" placeholder="Points">
 
-      <input type="number" placeholder="Quantity" id="q-${a.id}">
-      <input type="number" placeholder="Price per unit" id="p-${a.id}">
-
-      <button onclick="placeBid(${a.id})">Submit Bid</button>
+        <button onclick="placeBid(${a.id})">Submit Bids</button>
+      </div>
     `;
-
-    userPanel.appendChild(card);
   });
 }
 
-// ================= PLACE BID =================
 function placeBid(id) {
-  const qty = Number(document.getElementById(`q-${id}`).value);
-  const price = Number(document.getElementById(`p-${id}`).value);
   const user = localStorage.getItem("currentUser");
-
-  if (!qty || !price) {
-    alert("Enter valid bid values");
-    return;
-  }
-
   const auction = auctions.find(a => a.id === id);
-  auction.bids.push({
-    user,
-    qty,
-    price,
-    total: qty * price
-  });
 
+  const bid = {
+    user,
+    highest: +document.getElementById(`hb-${id}`).value || null,
+    lowest: +document.getElementById(`lb-${id}`).value || null,
+    secret: +document.getElementById(`sb-${id}`).value || null,
+    multi: {
+      price: +document.getElementById(`mbp-${id}`).value || null,
+      points: +document.getElementById(`mbpt-${id}`).value || null
+    }
+  };
+
+  auction.bids.push(bid);
   localStorage.setItem("auctions", JSON.stringify(auctions));
-  alert("Bid placed successfully");
+  alert("Bids submitted");
 }
 
 // ================= TIMER =================
@@ -95,7 +90,6 @@ setInterval(() => {
     const t = document.getElementById(`t-${a.id}`);
     if (t) t.innerText = `Time: ${a.time}s`;
   });
-
   localStorage.setItem("auctions", JSON.stringify(auctions));
 }, 1000);
 
@@ -104,29 +98,29 @@ const adminData = document.getElementById("adminData");
 if (adminData) renderAdmin();
 
 function renderAdmin() {
+  let users = new Set();
   adminData.innerHTML = "";
 
   auctions.forEach(a => {
-    let winner = null;
+    a.bids.forEach(b => users.add(b.user));
 
-    if (a.bids.length > 0) {
-      winner = a.bids.reduce((max, b) => b.total > max.total ? b : max);
-    }
+    const highest = a.bids.filter(b=>b.highest!=null).sort((a,b)=>b.highest-a.highest)[0];
+    const lowest = a.bids.filter(b=>b.lowest!=null).sort((a,b)=>a.lowest-b.lowest)[0];
+    const secretSorted = a.bids.filter(b=>b.secret!=null).sort((a,b)=>b.secret-a.secret);
+    const secondSecret = secretSorted[1];
+    const multi = a.bids.filter(b=>b.multi.price!=null)
+      .sort((a,b)=> (b.multi.price+b.multi.points)-(a.multi.price+a.multi.points))[0];
 
     adminData.innerHTML += `
       <div class="card">
         <h3>${a.name}</h3>
-
-        ${a.bids.map(b =>
-          `<p>${b.user} → ₹${b.total}</p>`
-        ).join("")}
-
-        <hr>
-        <strong>
-          Winner:
-          ${winner ? winner.user + " (₹" + winner.total + ")" : "No bids yet"}
-        </strong>
+        <p>Highest: ${highest ? highest.user+" ₹"+highest.highest : "—"}</p>
+        <p>Lowest: ${lowest ? lowest.user+" ₹"+lowest.lowest : "—"}</p>
+        <p>Second Secret: ${secondSecret ? secondSecret.user+" ₹"+secondSecret.secret : "—"}</p>
+        <p>Multi-variable: ${multi ? multi.user+" ("+(multi.multi.price+multi.multi.points)+")" : "—"}</p>
       </div>
     `;
   });
+
+  document.getElementById("userCount").innerText = users.size;
 }
