@@ -1,34 +1,45 @@
 body {
-  margin: 0;
   font-family: Arial;
-  background: linear-gradient(to right, #6a7bd1, #7e57c2);
+  background: linear-gradient(120deg,#6a7bd1,#7d5fb2);
   color: white;
+  margin: 0;
+  padding: 20px;
 }
 
-.hidden {
-  display: none;
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-#loginBox {
-  width: 300px;
-  margin: 100px auto;
-  text-align: center;
+.login-box {
+  background: rgba(0,0,0,0.2);
+  padding: 25px;
+  border-radius: 10px;
+  width: 280px;
 }
 
 input {
-  width: 80%;
+  width: 100%;
   padding: 8px;
-  margin: 8px;
+  margin: 8px 0;
 }
 
 button {
-  padding: 8px 15px;
+  width: 100%;
+  padding: 10px;
   cursor: pointer;
 }
 
-.bidCard {
-  background: rgba(255,255,255,0.15);
+.card {
+  background: rgba(0,0,0,0.25);
   padding: 15px;
-  margin: 10px;
-  border-radius: 8px;
+  margin: 15px 0;
+  border-radius: 10px;
+}
+
+.timer {
+  font-weight: bold;
+  margin-bottom: 10px;
 }

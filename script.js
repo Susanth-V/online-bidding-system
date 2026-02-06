@@ -1,105 +1,132 @@
-// ADMIN CREDENTIALS
-const ADMIN_EMAIL = "admin@auction.com";
-const ADMIN_OTP = "999999";
+console.log("JS LOADED");
 
-let bids = [];
+// ================= CONFIG =================
+const ADMIN_USER = "preesuzz";
+const ADMIN_PASS = "50shadesofdaa";
 
-// LOGIN FUNCTION
+// ================= DATA INIT (SAFE) =================
+let auctions = JSON.parse(localStorage.getItem("auctions"));
+
+if (!auctions) {
+  auctions = [
+    { id: 1, name: "Antique Vase", time: 120, bids: [] },
+    { id: 2, name: "Construction Tender", time: 150, bids: [] }
+  ];
+} else {
+  auctions.forEach(a => {
+    if (a.time === undefined) a.time = 120;
+    if (!a.bids) a.bids = [];
+  });
+}
+
+localStorage.setItem("auctions", JSON.stringify(auctions));
+
+// ================= LOGIN =================
 function login() {
-  const email = document.getElementById("email").value;
-  const otp = document.getElementById("otp").value;
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
 
-  document.getElementById("loginBox").style.display = "none";
-
-  // ✅ ADMIN CHECK FIRST
-  if (email === ADMIN_EMAIL && otp === ADMIN_OTP) {
-    document.getElementById("adminPanel").style.display = "block";
-  } else {
-    document.getElementById("userPanel").style.display = "block";
-    loadUserBids(email);
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    localStorage.setItem("role", "admin");
+    location.href = "admin.html";
+  } 
+  else if (u !== "") {
+    localStorage.setItem("currentUser", u);
+    localStorage.setItem("role", "user");
+    location.href = "user.html";
+  } 
+  else {
+    document.getElementById("loginError").innerText = "Invalid login";
   }
 }
 
-// LOAD USER BIDS UI
-function loadUserBids(username) {
-  const container = document.getElementById("bidContainer");
+// ================= USER PANEL =================
+const userPanel = document.getElementById("userPanel");
+if (userPanel) renderUser();
 
-  container.innerHTML = `
-    <div class="bidCard">
-      <h3>Highest Bid</h3>
-      <input type="number" id="highBid">
-      <span id="timer1"></span>
-      <button onclick="submitBid('${username}','Highest','highBid')">Submit</button>
-    </div>
+function renderUser() {
+  userPanel.innerHTML = "";
 
-    <div class="bidCard">
-      <h3>Lowest Bid</h3>
-      <input type="number" id="lowBid">
-      <span id="timer2"></span>
-      <button onclick="submitBid('${username}','Lowest','lowBid')">Submit</button>
-    </div>
+  auctions.forEach(a => {
+    const card = document.createElement("div");
+    card.className = "card";
 
-    <div class="bidCard">
-      <h3>Secret Bid</h3>
-      <input type="number" id="secretBid">
-      <span id="timer3"></span>
-      <button onclick="submitBid('${username}','Secret','secretBid')">Submit</button>
-    </div>
+    card.innerHTML = `
+      <h3>${a.name}</h3>
+      <div class="timer" id="t-${a.id}">Time: ${a.time}s</div>
 
-    <div class="bidCard">
-      <h3>Multi-variable Bid (Price + Points)</h3>
-      <input type="number" id="multiPrice" placeholder="Price">
-      <input type="number" id="multiPoints" placeholder="Points">
-      <span id="timer4"></span>
-      <button onclick="submitMultiBid('${username}')">Submit</button>
-    </div>
-  `;
+      <input type="number" placeholder="Quantity" id="q-${a.id}">
+      <input type="number" placeholder="Price per unit" id="p-${a.id}">
 
-  startTimer("timer1", 30);
-  startTimer("timer2", 30);
-  startTimer("timer3", 30);
-  startTimer("timer4", 30);
+      <button onclick="placeBid(${a.id})">Submit Bid</button>
+    `;
+
+    userPanel.appendChild(card);
+  });
 }
 
-// TIMER
-function startTimer(id, seconds) {
-  let time = seconds;
-  const el = document.getElementById(id);
+// ================= PLACE BID =================
+function placeBid(id) {
+  const qty = Number(document.getElementById(`q-${id}`).value);
+  const price = Number(document.getElementById(`p-${id}`).value);
+  const user = localStorage.getItem("currentUser");
 
-  const interval = setInterval(() => {
-    el.innerText = ` ⏳ ${time}s`;
-    time--;
-    if (time < 0) {
-      clearInterval(interval);
-      el.innerText = " Closed";
+  if (!qty || !price) {
+    alert("Enter valid bid values");
+    return;
+  }
+
+  const auction = auctions.find(a => a.id === id);
+  auction.bids.push({
+    user,
+    qty,
+    price,
+    total: qty * price
+  });
+
+  localStorage.setItem("auctions", JSON.stringify(auctions));
+  alert("Bid placed successfully");
+}
+
+// ================= TIMER =================
+setInterval(() => {
+  auctions.forEach(a => {
+    if (a.time > 0) a.time--;
+    const t = document.getElementById(`t-${a.id}`);
+    if (t) t.innerText = `Time: ${a.time}s`;
+  });
+
+  localStorage.setItem("auctions", JSON.stringify(auctions));
+}, 1000);
+
+// ================= ADMIN PANEL =================
+const adminData = document.getElementById("adminData");
+if (adminData) renderAdmin();
+
+function renderAdmin() {
+  adminData.innerHTML = "";
+
+  auctions.forEach(a => {
+    let winner = null;
+
+    if (a.bids.length > 0) {
+      winner = a.bids.reduce((max, b) => b.total > max.total ? b : max);
     }
-  }, 1000);
-}
 
-// SUBMIT BID
-function submitBid(user, type, inputId) {
-  const value = document.getElementById(inputId).value;
-  bids.push({ user, type, value: Number(value) });
-  alert(type + " bid submitted");
-}
+    adminData.innerHTML += `
+      <div class="card">
+        <h3>${a.name}</h3>
 
-// MULTI BID
-function submitMultiBid(user) {
-  const price = Number(document.getElementById("multiPrice").value);
-  const points = Number(document.getElementById("multiPoints").value);
-  bids.push({ user, type: "Multi", value: price + points });
-  alert("Multi bid submitted");
-}
+        ${a.bids.map(b =>
+          `<p>${b.user} → ₹${b.total}</p>`
+        ).join("")}
 
-// ADMIN – WINNER
-function calculateWinner() {
-  if (bids.length === 0) return;
-
-  let winner = bids.reduce((a, b) => b.value > a.value ? b : a);
-
-  document.getElementById("winnerBox").innerHTML = `
-    <h3>Winner</h3>
-    <p>User: ${winner.user}</p>
-    <p>Winning Value: ${winner.value}</p>
-  `;
+        <hr>
+        <strong>
+          Winner:
+          ${winner ? winner.user + " (₹" + winner.total + ")" : "No bids yet"}
+        </strong>
+      </div>
+    `;
+  });
 }

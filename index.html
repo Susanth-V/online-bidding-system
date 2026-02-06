@@ -1,32 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Auction System</title>
+  <title>Auction Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="center">
 
-<!-- LOGIN -->
-<div id="loginBox">
-  <h2>Login</h2>
-  <input type="text" id="Username" placeholder="Username">
-  <input type="text" id="otp" placeholder="OTP">
-  <button onclick="login()">Login</button>
-</div>
+  <div class="login-box">
+    <h2>Login</h2>
 
-<!-- USER PANEL -->
-<div id="userPanel" class="hidden">
-  <h1>User Auction Panel</h1>
-  <div id="bidContainer"></div>
-</div>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
 
-<!-- ADMIN PANEL -->
-<div id="adminPanel" class="hidden">
-  <h1>Admin Panel</h1>
-  <button onclick="calculateWinner()">Show Winner</button>
-  <div id="winnerBox"></div>
-</div>
+    <button onclick="login()">Login</button>
+    <p id="loginError"></p>
+  </div>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
