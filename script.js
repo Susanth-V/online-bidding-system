@@ -1,14 +1,52 @@
+console.log("JS LOADED");
+
 // ================= CONFIG =================
 const ADMIN_USER = "preesuzz";
 const ADMIN_PASS = "50shadesofdaa";
 
-// ================= DATA =================
-let auctions = JSON.parse(localStorage.getItem("auctions")) || [
-  { id: 1, name: "Advertisement Rights (Highest Bid)", type: "highest", time: 120, bids: [] },
-  { id: 2, name: "Road Construction Tender (Lowest Bid)", type: "lowest", time: 120, bids: [] },
-  { id: 3, name: "Spectrum Allocation (Second Secret Bid)", type: "secret", time: 120, bids: [] },
-  { id: 4, name: "EV Charging Station (Multi-variable)", type: "multi", time: 120, bids: [] }
-];
+// ================= AUCTION DATA =================
+let auctions = JSON.parse(localStorage.getItem("auctions"));
+
+if (!auctions) {
+  auctions = [
+    {
+      id: 1,
+      title: "Advertisement Rights Auction",
+      type: "highest",
+      desc: "Highest Bid → Winner: Highest Price",
+      time: 60,
+      bids: [],
+      ended: false
+    },
+    {
+      id: 2,
+      title: "Road Construction Tender",
+      type: "lowest",
+      desc: "Lowest Bid → Winner: Lowest Price",
+      time: 60,
+      bids: [],
+      ended: false
+    },
+    {
+      id: 3,
+      title: "Spectrum Allocation",
+      type: "secret",
+      desc: "Second Secret Bid → Winner: Second Highest",
+      time: 60,
+      bids: [],
+      ended: false
+    },
+    {
+      id: 4,
+      title: "EV Charging Station Contract",
+      type: "multi",
+      desc: "Multi-Variable → Score = Price + Points",
+      time: 60,
+      bids: [],
+      ended: false
+    }
+  ];
+}
 
 localStorage.setItem("auctions", JSON.stringify(auctions));
 
@@ -38,82 +76,90 @@ function renderUser() {
     let inputs = "";
 
     if (a.type !== "multi") {
-      inputs = `<input id="price-${a.id}" type="number" placeholder="Price">`;
+      inputs = `<input type="number" id="price-${a.id}" placeholder="Enter Price (₹)">`;
     } else {
       inputs = `
-        <input id="price-${a.id}" type="number" placeholder="Price">
-        <input id="points-${a.id}" type="number" placeholder="Points">
+        <input type="number" id="price-${a.id}" placeholder="Enter Price (₹)">
+        <input type="number" id="points-${a.id}" placeholder="Enter Technical Points">
       `;
     }
 
     userPanel.innerHTML += `
       <div class="card">
-        <h3>${a.name}</h3>
-        <div class="timer">Time: ${a.time}s</div>
+        <h3>${a.title}</h3>
+        <p>${a.desc}</p>
+
+        <div class="timer" id="timer-${a.id}">Time: ${a.time}s</div>
+        <div id="winner-${a.id}"><b>Current Winner:</b> —</div>
+
         ${inputs}
-        <button onclick="placeBid(${a.id})">Submit Bid</button>
+
+        <button id="btn-${a.id}" onclick="placeBid(${a.id})">Submit Bid</button>
       </div>
     `;
   });
 }
 
+// ================= PLACE BID =================
 function placeBid(id) {
-  const user = localStorage.getItem("currentUser");
   const auction = auctions.find(a => a.id === id);
+  if (auction.ended) return;
 
-  const price = +document.getElementById(`price-${id}`).value || 0;
-  const pointsEl = document.getElementById(`points-${id}`);
-  const points = pointsEl ? +pointsEl.value || 0 : 0;
+  const user = localStorage.getItem("currentUser");
+  const price = +document.getElementById(`price-${id}`)?.value || 0;
+  const points = +document.getElementById(`points-${id}`)?.value || 0;
 
   auction.bids.push({ user, price, points });
   localStorage.setItem("auctions", JSON.stringify(auctions));
 
-  alert("Bid submitted");
+  updateWinner(id);
 }
 
-// ================= ADMIN PANEL =================
-const adminData = document.getElementById("adminData");
-if (adminData) renderAdmin();
+// ================= WINNER LOGIC =================
+function updateWinner(id) {
+  const auction = auctions.find(a => a.id === id);
+  let winner = "—";
 
-function renderAdmin() {
-  let users = new Set();
-  adminData.innerHTML = "";
+  if (auction.type === "highest") {
+    const w = auction.bids.sort((a,b)=>b.price-a.price)[0];
+    if (w) winner = `${w.user} (₹${w.price})`;
+  }
 
+  if (auction.type === "lowest") {
+    const w = auction.bids.sort((a,b)=>a.price-b.price)[0];
+    if (w) winner = `${w.user} (₹${w.price})`;
+  }
+
+  if (auction.type === "secret") {
+    const sorted = auction.bids.sort((a,b)=>b.price-a.price);
+    if (sorted[1]) winner = `${sorted[1].user} (₹${sorted[1].price})`;
+  }
+
+  if (auction.type === "multi") {
+    const w = auction.bids.sort(
+      (a,b)=>(b.price+b.points)-(a.price+a.points)
+    )[0];
+    if (w) winner = `${w.user} (Score: ${w.price + w.points})`;
+  }
+
+  document.getElementById(`winner-${id}`).innerHTML =
+    `<b>${auction.ended ? "Final Winner" : "Current Winner"}:</b> ${winner}`;
+}
+
+// ================= TIMER =================
+setInterval(() => {
   auctions.forEach(a => {
-    a.bids.forEach(b => users.add(b.user));
+    if (!a.ended && a.time > 0) {
+      a.time--;
+      document.getElementById(`timer-${a.id}`).innerText = `Time: ${a.time}s`;
 
-    let winner = "—";
-
-    if (a.type === "highest") {
-      const w = a.bids.sort((x,y)=>y.price-x.price)[0];
-      if (w) winner = `${w.user} (₹${w.price})`;
+      if (a.time === 0) {
+        a.ended = true;
+        document.getElementById(`btn-${a.id}`).disabled = true;
+        updateWinner(a.id);
+      }
     }
-
-    if (a.type === "lowest") {
-      const w = a.bids.sort((x,y)=>x.price-y.price)[0];
-      if (w) winner = `${w.user} (₹${w.price})`;
-    }
-
-    if (a.type === "secret") {
-      const sorted = a.bids.sort((x,y)=>y.price-x.price);
-      if (sorted[1]) winner = `${sorted[1].user} (₹${sorted[1].price})`;
-    }
-
-    if (a.type === "multi") {
-      const w = a.bids.sort((x,y)=>(y.price+y.points)-(x.price+x.points))[0];
-      if (w) winner = `${w.user} (Score: ${w.price+w.points})`;
-    }
-
-    adminData.innerHTML += `
-      <div class="card">
-        <h3>${a.name}</h3>
-        <p><b>All Bids:</b></p>
-        ${a.bids.map(b => `${b.user} → ₹${b.price}${a.type==="multi" ? " + "+b.points : ""}`).join("<br>")}
-        <hr>
-        <p><b>Winner:</b> ${winner}</p>
-      </div>
-    `;
   });
 
-  document.getElementById("userCount").innerText = users.size;
-}
+  localStorage.setItem("auctions", JSON.stringify(auctions));
+}, 1000);
