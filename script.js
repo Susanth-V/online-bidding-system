@@ -3,23 +3,13 @@ const ADMIN_USER = "preesuzz";
 const ADMIN_PASS = "50sodaa";
 
 function adminLogin() {
-  const u = document.getElementById("adminUser").value;
-  const p = document.getElementById("adminPass").value;
-
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
+  if (
+    adminUser.value === ADMIN_USER &&
+    adminPass.value === ADMIN_PASS
+  ) {
     localStorage.setItem("isAdmin", "true");
     window.location = "admin.html";
-  } else {
-    alert("Invalid Admin Credentials");
-  }
-}
-
-/* ================= PAGE PROTECTION ================= */
-if (location.pathname.includes("admin")) {
-  if (localStorage.getItem("isAdmin") !== "true") {
-    alert("Unauthorized Access");
-    window.location = "index.html";
-  }
+  } else alert("Invalid Admin Credentials");
 }
 
 /* ================= USER OTP LOGIN ================= */
@@ -27,18 +17,16 @@ let OTP;
 
 function sendOTP() {
   OTP = Math.floor(100000 + Math.random() * 900000);
-  document.getElementById("msg").innerText = "OTP: " + OTP;
+  msg.innerText = "OTP: " + OTP;
 }
 
 function verifyOTP() {
-  if (document.getElementById("otp").value == OTP) {
+  if (otp.value == OTP) {
     let users = JSON.parse(localStorage.getItem("users") || "[]");
-    users.push(document.getElementById("email").value);
+    users.push(email.value);
     localStorage.setItem("users", JSON.stringify(users));
     window.location = "user.html";
-  } else {
-    alert("Invalid OTP");
-  }
+  } else alert("Invalid OTP");
 }
 
 /* ================= STORAGE ================= */
@@ -55,19 +43,18 @@ function bid(type, u, p) {
 }
 
 function bidMulti() {
-  let user = u4.value;
   let score = Number(p4.value) + Number(pt4.value);
   if (!bids.multi) bids.multi = [];
-  bids.multi.push({ user, score });
+  bids.multi.push({ user: u4.value, score });
   localStorage.setItem("bids", JSON.stringify(bids));
 }
 
 /* ================= TIMERS ================= */
-function timer(id, seconds, type) {
-  let t = seconds;
+function timer(id, sec, type) {
+  let t = sec;
   let el = document.getElementById(id);
   let x = setInterval(() => {
-    el.innerText = "Time: " + t + "s";
+    el.innerText = "Time: " + t;
     if (t-- <= 0) {
       clearInterval(x);
       declareWinner(type);
@@ -76,13 +63,13 @@ function timer(id, seconds, type) {
 }
 
 function declareWinner(type) {
-  let arr = bids[type];
-  if (!arr) return;
+  let a = bids[type];
+  if (!a || a.length === 0) return;
 
-  if (type === "highest") winners[type] = arr.sort((a, b) => b.price - a.price)[0];
-  if (type === "lowest") winners[type] = arr.sort((a, b) => a.price - b.price)[0];
-  if (type === "second") winners[type] = arr.sort((a, b) => b.price - a.price)[1];
-  if (type === "multi") winners[type] = arr.sort((a, b) => b.score - a.score)[0];
+  if (type === "highest") winners[type] = a.sort((x,y)=>y.price-x.price)[0];
+  if (type === "lowest") winners[type] = a.sort((x,y)=>x.price-y.price)[0];
+  if (type === "second" && a.length>1) winners[type] = a.sort((x,y)=>y.price-x.price)[1];
+  if (type === "multi") winners[type] = a.sort((x,y)=>y.score-x.score)[0];
 
   localStorage.setItem("winners", JSON.stringify(winners));
 }
@@ -96,12 +83,25 @@ if (location.pathname.includes("user")) {
 }
 
 if (location.pathname.includes("admin")) {
-  document.getElementById("users").innerText =
-    JSON.parse(localStorage.getItem("users") || "[]").length;
+  if (localStorage.getItem("isAdmin") !== "true") {
+    alert("Unauthorized");
+    location.href = "index.html";
+  }
 
-  document.getElementById("bids").innerText =
-    JSON.stringify(JSON.parse(localStorage.getItem("bids")), null, 2);
+  let users = JSON.parse(localStorage.getItem("users") || "[]");
+  users.innerText = users.length;
 
-  document.getElementById("winners").innerText =
-    JSON.stringify(JSON.parse(localStorage.getItem("winners")), null, 2);
+  let b = JSON.parse(localStorage.getItem("bids") || "{}");
+  let out = "";
+  for (let k in b) {
+    out += `\n${k.toUpperCase()}:\n`;
+    b[k].forEach((x,i)=>out+=`${i+1}. ${x.user} → ${x.price ?? x.score}\n`);
+  }
+  bids.innerText = out || "No bids yet";
+
+  let w = JSON.parse(localStorage.getItem("winners") || "{}");
+  let win = "";
+  for (let k in w)
+    win += `${k.toUpperCase()} → ${w[k].user} (${w[k].price ?? w[k].score})\n`;
+  winners.innerText = win || "Waiting for timers to finish";
 }
