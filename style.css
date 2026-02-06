@@ -1,69 +1,64 @@
 body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
   margin: 0;
-  font-family: Arial;
-  background: linear-gradient(135deg, #6a78d1, #7d4fa3);
+  padding: 0;
 }
 
-.heading {
+/* Title */
+.title {
   text-align: center;
-  color: white;
-  margin: 20px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 20px;
-  padding: 30px;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-}
-
-.card h3 {
-  margin-top: 0;
-}
-
-.timer {
-  color: red;
+  font-size: 32px;
+  margin: 20px 0;
   font-weight: bold;
 }
 
-input {
-  width: 100%;
-  padding: 8px;
-  margin-top: 8px;
+/* Login box */
+.login-box {
+  width: 320px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  padding: 20px;
+}
+
+/* Card */
+.card {
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  font-size: 14px;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 6px;
+  margin: 6px 0;
+  font-size: 13px;
+}
+
+/* Buttons */
 button {
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  background: linear-gradient(90deg, #6a78d1, #7d4fa3);
+  padding: 6px;
+  background: #007bff;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
 }
 
-.login-box {
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  width: 300px;
-}
-
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.stats {
-  text-align: center;
-  color: white;
+button:hover {
+  background: #0056b3;
 }
