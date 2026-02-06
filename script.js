@@ -9,32 +9,59 @@ let auctions = JSON.parse(localStorage.getItem("auctions")) || [
     name: "Antique Vase",
     bids: {
       highest: { time: 60, list: [] },
-      lowest: { time: 60, list: [] },
-      secret: { time: 60, list: [] },
-      multi:  { time: 60, list: [] }
+      lowest:  { time: 60, list: [] },
+      secret:  { time: 60, list: [] },
+      multi:   { time: 60, list: [] }
     }
   }
 ];
 
-// ================= LOGIN ==================
-function login() {
-    const u = username.value;
-    const p = password.value;
+// ================= SAFE DOM LOAD =================
+document.addEventListener("DOMContentLoaded", () => {
 
-    if (u === ADMIN_USER && p === ADMIN_PASS) {
-        location.href = "admin.html";
-    } else if (u) {
-        localStorage.setItem("currentUser", u);
-        location.href = "user.html";
-    } else {
-        loginError.textContent = "Invalid login";
+    // ---------- LOGIN PAGE ----------
+    if (document.getElementById("username")) {
+        window.login = function () {
+            const u = username.value.trim();
+            const p = password.value.trim();
+
+            if (u === ADMIN_USER && p === ADMIN_PASS) {
+                localStorage.setItem("role", "admin");
+                location.href = "admin.html";
+            }
+            else if (u.length > 0) {
+                localStorage.setItem("role", "user");
+                localStorage.setItem("currentUser", u);
+                location.href = "user.html";
+            }
+            else {
+                loginError.textContent = "Invalid login";
+            }
+        };
     }
-}
+
+    // ---------- USER PANEL ----------
+    const userPanel = document.getElementById("userPanel");
+    if (userPanel) {
+        if (localStorage.getItem("role") !== "user") {
+            location.href = "index.html";
+            return;
+        }
+        renderUser();
+    }
+
+    // ---------- ADMIN PANEL ----------
+    const adminData = document.getElementById("adminData");
+    if (adminData) {
+        if (localStorage.getItem("role") !== "admin") {
+            location.href = "index.html";
+            return;
+        }
+        renderAdmin();
+    }
+});
 
 // ================= USER PANEL =================
-const userPanel = document.getElementById("userPanel");
-if (userPanel) renderUser();
-
 function renderUser() {
     userPanel.innerHTML = "";
     auctions.forEach(a => {
@@ -42,20 +69,20 @@ function renderUser() {
         <div class="card">
             <h3>${a.name}</h3>
 
-            <p class="timer">Highest Bid (<span id="ht-${a.id}">${a.bids.highest.time}</span>s)</p>
-            <input id="h-${a.id}" type="number" placeholder="Highest Price">
+            <p class="timer">Highest (<span id="ht-${a.id}">${a.bids.highest.time}</span>s)</p>
+            <input id="h-${a.id}" type="number" placeholder="Highest price">
 
-            <p class="timer">Lowest Bid (<span id="lt-${a.id}">${a.bids.lowest.time}</span>s)</p>
-            <input id="l-${a.id}" type="number" placeholder="Lowest Price">
+            <p class="timer">Lowest (<span id="lt-${a.id}">${a.bids.lowest.time}</span>s)</p>
+            <input id="l-${a.id}" type="number" placeholder="Lowest price">
 
-            <p class="timer">Secret Bid (<span id="st-${a.id}">${a.bids.secret.time}</span>s)</p>
-            <input id="s-${a.id}" type="number" placeholder="Secret Price">
+            <p class="timer">Secret (<span id="st-${a.id}">${a.bids.secret.time}</span>s)</p>
+            <input id="s-${a.id}" type="number" placeholder="Secret price">
 
-            <p class="timer">Multi Bid (<span id="mt-${a.id}">${a.bids.multi.time}</span>s)</p>
+            <p class="timer">Multi (<span id="mt-${a.id}">${a.bids.multi.time}</span>s)</p>
             <input id="mp-${a.id}" type="number" placeholder="Price">
             <input id="pt-${a.id}" type="number" placeholder="Points">
 
-            <button onclick="placeBids(${a.id})">Submit Bids</button>
+            <button onclick="placeBids(${a.id})">Submit</button>
         </div>`;
     });
 }
@@ -80,7 +107,7 @@ function placeBids(id) {
         a.bids.secret.list.push({ user, price: sb });
 
     if (mp && pt && a.bids.multi.time > 0)
-        a.bids.multi.list.push({ user, score: mp + pt, price: mp, points: pt });
+        a.bids.multi.list.push({ user, score: mp + pt });
 
     localStorage.setItem("auctions", JSON.stringify(auctions));
     confetti();
@@ -99,20 +126,16 @@ setInterval(() => {
             if (t) t.textContent = a.bids[k].time;
         });
     });
-
     localStorage.setItem("auctions", JSON.stringify(auctions));
 }, 1000);
 
 // ================= ADMIN PANEL =================
-const adminData = document.getElementById("adminData");
-if (adminData) renderAdmin();
-
-function getWinners(bids) {
+function getWinners(b) {
     return {
-        highest: bids.highest.list.sort((a,b)=>b.price-a.price)[0],
-        lowest:  bids.lowest.list.sort((a,b)=>a.price-b.price)[0],
-        secret:  bids.secret.list.sort((a,b)=>b.price-a.price)[1],
-        multi:   bids.multi.list.sort((a,b)=>b.score-a.score)[0]
+        highest: b.highest.list.sort((a,b)=>b.price-a.price)[0],
+        lowest:  b.lowest.list.sort((a,b)=>a.price-b.price)[0],
+        secret:  b.secret.list.sort((a,b)=>b.price-a.price)[1],
+        multi:   b.multi.list.sort((a,b)=>b.score-a.score)[0]
     };
 }
 
@@ -126,10 +149,10 @@ function renderAdmin() {
         adminData.innerHTML += `
         <div class="card">
             <h3>${a.name}</h3>
-            <p><b>Highest Winner:</b> ${w.highest?.user || "-"} | ₹${w.highest?.price || "-"}</p>
-            <p><b>Lowest Winner:</b> ${w.lowest?.user || "-"} | ₹${w.lowest?.price || "-"}</p>
-            <p><b>Secret Winner:</b> ${w.secret?.user || "-"} | ₹${w.secret?.price || "-"}</p>
-            <p><b>Multi Winner:</b> ${w.multi?.user || "-"} | Score ${w.multi?.score || "-"}</p>
+            <p><b>Highest:</b> ${w.highest?.user || "-"} | ₹${w.highest?.price || "-"}</p>
+            <p><b>Lowest:</b> ${w.lowest?.user || "-"} | ₹${w.lowest?.price || "-"}</p>
+            <p><b>Secret:</b> ${w.secret?.user || "-"} | ₹${w.secret?.price || "-"}</p>
+            <p><b>Multi:</b> ${w.multi?.user || "-"} | Score ${w.multi?.score || "-"}</p>
         </div><hr>`;
 
         Object.values(a.bids).forEach(b =>
