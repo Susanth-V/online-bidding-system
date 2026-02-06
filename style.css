@@ -1,6 +1,6 @@
 body {
   font-family: Arial;
-  background: linear-gradient(120deg,#6a7bd1,#7d5fb2);
+  background: linear-gradient(120deg,#667eea,#764ba2);
   color: white;
   margin: 0;
   padding: 20px;
@@ -29,8 +29,7 @@ input {
 button {
   padding: 6px;
   width: 100%;
-  margin-top: 5px;
-  cursor: pointer;
+  margin-top: 6px;
 }
 
 .timer {
