@@ -5,18 +5,20 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="container">
+    <h1>Admin Panel</h1>
 
-<h1>Admin Dashboard</h1>
+    <div class="stat">
+      <h3>Total Users</h3>
+      <p id="users"></p>
+    </div>
 
-<h2>Total Users</h2>
-<p id="totalUsers">0</p>
+    <div class="stat">
+      <h3>Winners</h3>
+      <pre id="winners"></pre>
+    </div>
+  </div>
 
-<h2>All Bids</h2>
-<pre id="allBids"></pre>
-
-<h2>Winners</h2>
-<pre id="winners"></pre>
-
-<script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

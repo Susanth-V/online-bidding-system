@@ -1,89 +1,60 @@
-// ---------- GLOBAL STORAGE ----------
-let bids = JSON.parse(localStorage.getItem("bids")) || [];
-let users = JSON.parse(localStorage.getItem("users")) || [];
-let winners = JSON.parse(localStorage.getItem("winners")) || {};
+const ADMIN_USER = "preesuzz";
+const ADMIN_PASS = "50sodaa";
 
-const AUCTION_TIME = Math.floor(Math.random() * 20) + 20; // random timer
-let timeLeft = AUCTION_TIME;
+let bids = JSON.parse(localStorage.getItem("bids") || "{}");
+let users = JSON.parse(localStorage.getItem("users") || "[]");
 
-// ---------- TIMER ----------
-if (document.getElementById("timer")) {
-  const timer = setInterval(() => {
-    document.getElementById("timer").innerText =
-      `Time Remaining: ${timeLeft}s`;
+// ---------- LOGIN ----------
+function login() {
+  const u = user.value;
+  const p = pass.value;
 
-    if (timeLeft-- <= 0) {
-      clearInterval(timer);
-      computeWinners();
-      document.getElementById("status").innerText =
-        "Bidding Closed. Winner Announced!";
-    }
-  }, 1000);
-}
-
-// ---------- USER BID ----------
-function placeBid() {
-  const auction = document.getElementById("auctionType").value;
-  const price = Number(document.getElementById("price").value);
-  const points = Number(document.getElementById("points").value || 0);
-
-  if (!price) {
-    alert("Price required");
-    return;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    location.href = "admin.html";
+  } else {
+    users.push(u);
+    localStorage.setItem("users", JSON.stringify(users));
+    location.href = "user.html";
   }
-
-  const userId = "USER_" + Math.floor(Math.random() * 10000);
-  users.push(userId);
-
-  bids.push({
-    userId,
-    auction,
-    price,
-    points,
-    score: price + points
-  });
-
-  localStorage.setItem("bids", JSON.stringify(bids));
-  localStorage.setItem("users", JSON.stringify(users));
-
-  document.getElementById("status").innerText = "Bid Submitted Successfully";
 }
 
-// ---------- WINNER LOGIC ----------
-function computeWinners() {
-  const group = {
-    highest: [],
-    lowest: [],
-    second: [],
-    multi: []
-  };
+// ---------- USER BIDS ----------
+function placeBid(type) {
+  if (!bids[type]) bids[type] = [];
 
-  bids.forEach(b => group[b.auction].push(b));
+  const name = document.getElementById(type[0] + "Name").value;
+  const price = Number(document.getElementById(type[0] + "Price").value);
 
-  // Highest Bid
-  winners.highest = group.highest.sort((a,b)=>b.price-a.price)[0] || null;
+  bids[type].push({ name, price });
+  localStorage.setItem("bids", JSON.stringify(bids));
+  alert("Bid Placed");
+}
 
-  // Lowest Bid
-  winners.lowest = group.lowest.sort((a,b)=>a.price-b.price)[0] || null;
-
-  // Second Secret Bid
-  const sorted = group.second.sort((a,b)=>b.price-a.price);
-  winners.second = sorted[1] || null;
-
-  // Multi Variable
-  winners.multi = group.multi.sort((a,b)=>b.score-a.score)[0] || null;
-
-  localStorage.setItem("winners", JSON.stringify(winners));
+function placeMulti() {
+  if (!bids.multi) bids.multi = [];
+  const name = mName.value;
+  const score = Number(mPrice.value) + Number(mPoints.value);
+  bids.multi.push({ name, score });
+  localStorage.setItem("bids", JSON.stringify(bids));
+  alert("Bid Placed");
 }
 
 // ---------- ADMIN PANEL ----------
-if (document.getElementById("totalUsers")) {
-  document.getElementById("totalUsers").innerText =
-    new Set(users).size;
+if (location.pathname.includes("admin")) {
+  document.getElementById("users").innerText = users.length;
 
-  document.getElementById("allBids").innerText =
-    JSON.stringify(bids, null, 2);
+  let result = "";
+  for (let k in bids) {
+    let winner;
+    if (k === "lowest")
+      winner = bids[k].sort((a,b)=>a.price-b.price)[0];
+    else if (k === "multi")
+      winner = bids[k].sort((a,b)=>b.score-a.score)[0];
+    else
+      winner = bids[k].sort((a,b)=>b.price-a.price)[0];
 
-  document.getElementById("winners").innerText =
-    JSON.stringify(winners, null, 2);
+    if (winner)
+      result += `${k.toUpperCase()} → ${winner.name}\n`;
+  }
+  document.getElementById("winners").innerText = result;
 }

@@ -1,29 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Smart City Vendor Bidding</title>
+  <title>Online Bidding System</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="container">
+    <h1>Online Bidding System</h1>
 
-<h1>User Bidding Panel</h1>
+    <div class="card" style="max-width:400px;margin:auto;">
+      <h3>Login</h3>
+      <input id="user" placeholder="Username">
+      <input id="pass" type="password" placeholder="Password">
+      <button onclick="login()">Login</button>
+    </div>
+  </div>
 
-<div id="timer"></div>
-
-<select id="auctionType">
-  <option value="highest">Advertisement Rights (Highest Bid)</option>
-  <option value="lowest">Road Construction (Lowest Bid)</option>
-  <option value="second">Spectrum Allocation (Second Secret Bid)</option>
-  <option value="multi">EV Charging Station (Price + Points)</option>
-</select>
-
-<input type="number" id="price" placeholder="Enter Price">
-<input type="number" id="points" placeholder="Technical Points (only for EV)">
-
-<button onclick="placeBid()">Place Bid</button>
-
-<p id="status"></p>
-
-<script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
