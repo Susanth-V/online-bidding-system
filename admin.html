@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bidding System Login</title>
+  <title>Admin Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <script>
+    if (localStorage.getItem("role") !== "admin") {
+      alert("Unauthorized access");
+      location.href = "index.html";
+    }
+  </script>
 </head>
 <body>
 
 <div class="container">
-  <h2>Login</h2>
+  <h2>Admin Panel</h2>
 
-  <h3>Admin Login</h3>
-  <input id="adminUser" placeholder="Username">
-  <input id="adminPass" type="password" placeholder="Password">
-  <button onclick="adminLogin()">Login as Admin</button>
+  <p><b>Total Users:</b> <span id="totalUsers">0</span></p>
 
-  <hr>
+  <h3>Current Winners</h3>
+  <pre id="winners"></pre>
 
-  <h3>User Login (Email + OTP)</h3>
-  <input id="userEmail" placeholder="Email">
-  <button onclick="sendOTP()">Send OTP</button>
-
-  <input id="otpInput" placeholder="Enter OTP">
-  <button onclick="verifyOTP()">Verify OTP</button>
+  <h3>Worst Case Time Complexity</h3>
+  <pre>
+Highest Bid        : O(n log n)
+Lowest Bid         : O(n log n)
+Sealed Bid         : O(n log n)
+Multivariable Bid  : O(n log n)
+  </pre>
 </div>
 
 <script src="script.js"></script>

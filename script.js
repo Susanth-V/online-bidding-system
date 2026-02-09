@@ -1,66 +1,116 @@
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+/******** ADMIN CREDENTIALS ********/
+const ADMIN_USER = "preesuzz";
+const ADMIN_PASS = "50sodaa";
+
+/******** STORAGE ********/
+let bids = JSON.parse(localStorage.getItem("bids")) || {
+  highest: [],
+  lowest: [],
+  sealed: [],
+  multi: []
+};
+
+/******** ADMIN LOGIN (FIXED) ********/
+function adminLogin() {
+  const username = document.getElementById("adminUser").value.trim();
+  const password = document.getElementById("adminPass").value.trim();
+
+  if (username === ADMIN_USER && password === ADMIN_PASS) {
+    localStorage.setItem("role", "admin");
+    location.href = "admin.html";
+  } else {
+    alert("Invalid admin credentials");
+  }
 }
 
-body {
-  background: linear-gradient(135deg, #1d2671, #c33764);
-  min-height: 100vh;
-  margin: 0;
-  color: #fff;
+/******** USER OTP LOGIN ********/
+function sendOTP() {
+  const email = document.getElementById("userEmail").value;
+  if (!email) return alert("Enter email");
+
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  localStorage.setItem("otp", otp);
+  alert("OTP (demo): " + otp);
 }
 
-.container, .dashboard {
-  background: rgba(0,0,0,0.35);
-  padding: 25px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 900px;
-  margin: 40px auto;
+function verifyOTP() {
+  if (document.getElementById("otpInput").value === localStorage.getItem("otp")) {
+    localStorage.setItem("role", "user");
+    location.href = "user.html";
+  } else alert("Wrong OTP");
 }
 
-h2 {
-  text-align: center;
+/******** MESSAGE ********/
+function showMsg(text, error=false) {
+  const msg = document.getElementById("msg");
+  msg.style.color = error ? "red" : "#00ff99";
+  msg.innerText = text;
+  setTimeout(() => msg.innerText = "", 3000);
 }
 
-input, button {
-  width: 100%;
-  padding: 10px;
-  margin: 6px 0;
-  border-radius: 6px;
-  border: none;
+/******** PLACE BIDS ********/
+function placeBid(type, nameId, priceId) {
+  const n = document.getElementById(nameId);
+  const p = document.getElementById(priceId);
+
+  if (!n.value || !p.value) return showMsg("Fill all fields", true);
+
+  bids[type].push({ name: n.value, price: +p.value });
+  localStorage.setItem("bids", JSON.stringify(bids));
+
+  n.value = p.value = "";
+  showMsg("Bid submitted successfully ✅");
 }
 
-button {
-  background: #ff9800;
-  font-weight: bold;
-  cursor: pointer;
+function placeMultiBid() {
+  if (!m_name.value || !m_price.value || !m_points.value)
+    return showMsg("Fill all fields", true);
+
+  bids.multi.push({
+    name: m_name.value,
+    price: +m_price.value,
+    points: +m_points.value,
+    score: +m_price.value + +m_points.value
+  });
+
+  localStorage.setItem("bids", JSON.stringify(bids));
+  m_name.value = m_price.value = m_points.value = "";
+  showMsg("Bid submitted successfully ✅");
 }
 
-button:hover {
-  background: #ffc107;
+/******** TIMERS ********/
+function startTimer(id, sec) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let t = sec;
+  const i = setInterval(() => {
+    el.innerText = `⏱ ${t}s`;
+    if (--t < 0) {
+      clearInterval(i);
+      el.innerText = "Closed";
+    }
+  }, 1000);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
+startTimer("t_high",60);
+startTimer("t_low",70);
+startTimer("t_sealed",80);
+startTimer("t_multi",90);
 
-.card {
-  background: rgba(0,0,0,0.45);
-  padding: 15px;
-  border-radius: 10px;
-}
+/******** ADMIN LOAD ********/
+if (location.pathname.includes("admin")) {
+  const winners = {
+    Highest: bids.highest.sort((a,b)=>b.price-a.price)[0] || "No bids",
+    Lowest: bids.lowest.sort((a,b)=>a.price-b.price)[0] || "No bids",
+    Sealed: bids.sealed.length>1 ? bids.sealed.sort((a,b)=>b.price-a.price)[1] : "Insufficient bids",
+    Multivariable: bids.multi.sort((a,b)=>b.score-a.score)[0] || "No bids"
+  };
 
-small {
-  display: block;
-  text-align: center;
-  margin-top: 5px;
-}
+  const users = new Set(
+    [].concat(bids.highest,bids.lowest,bids.sealed,bids.multi).map(b=>b.name)
+  );
 
-pre {
-  background: #000;
-  padding: 10px;
-  border-radius: 6px;
+  document.getElementById("totalUsers").innerText = users.size;
+  document.getElementById("winners").innerText =
+    JSON.stringify(winners,null,2);
 }
