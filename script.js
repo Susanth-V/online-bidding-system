@@ -1,80 +1,125 @@
-/***********************
- ADMIN LOGIN LOGIC
-***********************/
+/*******************
+ ADMIN LOGIN
+*******************/
 function adminLogin() {
-  const user = document.getElementById("adminUser").value.trim();
-  const pass = document.getElementById("adminPass").value.trim();
+  const u = adminUser.value;
+  const p = adminPass.value;
 
-  if (user === "preesuzz" && pass === "50sodaa") {
-    // clear admin inputs
-    document.getElementById("adminUser").value = "";
-    document.getElementById("adminPass").value = "";
-
-    window.location.href = "admin.html";
-  } else {
-    alert("Invalid admin credentials");
-  }
+  if (u === "preesuzz" && p === "50sodaa")
+    window.location = "admin.html";
+  else
+    alert("Wrong credentials");
 }
 
-/***********************
- USER LOGIN LOGIC
-***********************/
+
+/*******************
+ OTP GENERATION
+*******************/
+let generatedOTP = "";
+
+function generateOTP() {
+  generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+  alert("Your OTP: " + generatedOTP); // demo purpose
+}
+
+
+/*******************
+ USER LOGIN
+*******************/
 function login() {
-  const username = document.getElementById("username").value.trim();
+  const name = username.value;
+  const otp = otpInput.value;
 
-  if (!username) {
-    alert("Enter username");
+  if (!name || otp !== generatedOTP) {
+    alert("Invalid OTP or name");
     return;
   }
 
-  let users = Number(localStorage.getItem("usersCount")) || 0;
-  localStorage.setItem("usersCount", users + 1);
+  let count = +localStorage.getItem("usersCount") || 0;
+  localStorage.setItem("usersCount", count + 1);
+  localStorage.setItem("currentUser", name);
 
-  localStorage.setItem("currentUser", username);
-  localStorage.setItem("algorithmComplexity", "O(n)");
+  username.value = "";
+  email.value = "";
+  otpInput.value = "";
 
-  document.getElementById("username").value = "";
-  document.getElementById("email").value = "";
-  document.getElementById("otp").value = "";
-
-  window.location.href = "user.html";
+  window.location = "user.html";
 }
 
-/***********************
+
+/*******************
  BID LOGIC
-***********************/
-function placeBid() {
-  const bidInput = document.getElementById("bidAmount");
-  const bid = Number(bidInput.value);
-  const user = localStorage.getItem("currentUser");
+*******************/
+function submitBid(type) {
 
-  if (!bid || !user) {
-    alert("Invalid bid");
-    return;
+  const get = id => document.getElementById(id).value;
+
+  let name, price, score;
+
+  if (type === "highest") {
+    name = get("hName");
+    price = +get("hPrice");
+  }
+  else if (type === "lowest") {
+    name = get("lName");
+    price = +get("lPrice");
+  }
+  else if (type === "secret") {
+    name = get("sName");
+    price = +get("sPrice");
+  }
+  else {
+    name = get("mName");
+    price = +get("mPrice");
+    score = +get("mPoints");
+    price += score; // combine logic
   }
 
-  let highestBid = Number(localStorage.getItem("highestBid")) || 0;
+  let best = +localStorage.getItem("bestScore") || 0;
 
-  if (bid > highestBid) {
-    localStorage.setItem("highestBid", bid);
-    localStorage.setItem("currentWinner", user);
+  if (price > best) {
+    localStorage.setItem("bestScore", price);
+    localStorage.setItem("currentWinner", name);
   }
 
-  bidInput.value = "";
-  alert("Bid submitted successfully!");
+  alert("Bid submitted");
+
+  location.reload(); // refresh page
 }
 
-/***********************
- ADMIN DASHBOARD LOAD
-***********************/
-window.onload = function () {
-  const users = document.getElementById("users");
-  const winner = document.getElementById("winner");
-  const complexity = document.getElementById("complexity");
 
-  if (users) users.innerText = localStorage.getItem("usersCount") || 0;
-  if (winner) winner.innerText = localStorage.getItem("currentWinner") || "None";
+/*******************
+ TIMERS
+*******************/
+function startTimer(id, seconds) {
+  let t = seconds;
+  const el = document.getElementById(id);
+
+  if (!el) return;
+
+  setInterval(() => {
+    if (t > 0) {
+      t--;
+      el.innerText = t;
+    }
+  }, 1000);
+}
+
+window.onload = function () {
+
+  // start timers
+  startTimer("t1", 59);
+  startTimer("t2", 69);
+  startTimer("t3", 79);
+  startTimer("t4", 89);
+
+  // admin values
+  if (users)
+    users.innerText = localStorage.getItem("usersCount") || 0;
+
+  if (winner)
+    winner.innerText = localStorage.getItem("currentWinner") || "None";
+
   if (complexity)
-    complexity.innerText =
-      localStorage.getItem("algorithmComplexity") || "O(n)";
+    complexity.innerText = "O(n log n)";
 };

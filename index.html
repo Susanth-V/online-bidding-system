@@ -8,6 +8,7 @@
 
 <div class="card small-card">
 
+  <!-- ADMIN LOGIN -->
   <h2>Admin Login</h2>
   <input id="adminUser" placeholder="Admin Username">
   <input id="adminPass" type="password" placeholder="Admin Password">
@@ -15,10 +16,14 @@
 
   <div class="divider"></div>
 
+  <!-- USER LOGIN -->
   <h2>User Login</h2>
   <input id="username" placeholder="Username">
   <input id="email" placeholder="Email">
-  <input id="otp" placeholder="OTP">
+
+  <button onclick="generateOTP()">Generate OTP</button>
+  <input id="otpInput" placeholder="Enter OTP">
+
   <button onclick="login()">Login as User</button>
 
 </div>

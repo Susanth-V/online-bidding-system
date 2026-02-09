@@ -6,15 +6,45 @@
 </head>
 <body>
 
-<div class="card small-card">
-  <h2>Place Your Bid</h2>
+<div class="dashboard">
+  <h1 class="dashboard-title">User Dashboard</h1>
 
-  <input id="bidAmount" placeholder="Enter bid amount">
-  <button onclick="placeBid()">Bid</button>
+  <div class="grid">
 
-  <p style="margin-top:15px;font-size:14px;">
-    Worst Case: <b>O(n)</b>
-  </p>
+    <div class="card bid-card">
+      <h3>Highest Bid</h3>
+      <input id="hName" placeholder="Name">
+      <input id="hPrice" placeholder="Price">
+      <button onclick="submitBid('highest')">Bid</button>
+      <p>⏱ <span id="t1">59</span>s</p>
+    </div>
+
+    <div class="card bid-card">
+      <h3>Lowest Bid</h3>
+      <input id="lName" placeholder="Name">
+      <input id="lPrice" placeholder="Price">
+      <button onclick="submitBid('lowest')">Bid</button>
+      <p>⏱ <span id="t2">69</span>s</p>
+    </div>
+
+    <div class="card bid-card">
+      <h3>Second Secret</h3>
+      <input id="sName" placeholder="Name">
+      <input id="sPrice" placeholder="Price">
+      <button onclick="submitBid('secret')">Bid</button>
+      <p>⏱ <span id="t3">79</span>s</p>
+    </div>
+
+    <div class="card bid-card">
+      <h3>Multivariable</h3>
+      <input id="mName" placeholder="Name">
+      <input id="mPrice" placeholder="Price">
+      <input id="mPoints" placeholder="Points">
+      <button onclick="submitBid('multi')">Bid</button>
+      <p>⏱ <span id="t4">89</span>s</p>
+    </div>
+
+  </div>
 </div>
 
 <script src="script.js"></script>
