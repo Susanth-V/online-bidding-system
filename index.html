@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Online Bidding System</title>
+  <title>Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Online Bidding System</h1>
 
-    <div class="card" style="max-width:400px;margin:auto;">
-      <h3>Login</h3>
-      <input id="user" placeholder="Username">
-      <input id="pass" type="password" placeholder="Password">
-      <button onclick="login()">Login</button>
-    </div>
-  </div>
+<div class="container">
+  <h2>Login</h2>
 
-  <script src="script.js"></script>
+  <!-- ADMIN LOGIN -->
+  <input id="adminUser" placeholder="Admin Username">
+  <input id="adminPass" type="password" placeholder="Admin Password">
+  <button onclick="adminLogin()">Admin Login</button>
+
+  <hr>
+
+  <!-- USER LOGIN -->
+  <input id="userEmail" type="email" placeholder="User Email">
+  <button onclick="sendOTP()">Send OTP</button>
+
+  <input id="otpInput" placeholder="Enter OTP">
+  <button onclick="verifyOTP()">Verify & Login</button>
+
+  <small>Admin → Username & Password<br>User → Email + OTP</small>
+</div>
+
+<script src="script.js"></script>
 </body>
-
 </html>
-

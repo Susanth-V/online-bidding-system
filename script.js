@@ -1,60 +1,95 @@
+/******** ADMIN CREDENTIALS ********/
 const ADMIN_USER = "preesuzz";
 const ADMIN_PASS = "50sodaa";
 
-let bids = JSON.parse(localStorage.getItem("bids") || "{}");
-let users = JSON.parse(localStorage.getItem("users") || "[]");
+/******** STORAGE ********/
+let bids = JSON.parse(localStorage.getItem("bids")) || {
+  highest: [],
+  lowest: [],
+  sealed: [],
+  multi: []
+};
 
-// ---------- LOGIN ----------
-function login() {
-  const u = user.value;
-  const p = pass.value;
-
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
+/******** ADMIN LOGIN ********/
+function adminLogin() {
+  if (adminUser.value === ADMIN_USER && adminPass.value === ADMIN_PASS) {
+    localStorage.setItem("role", "admin");
     location.href = "admin.html";
-  } else {
-    users.push(u);
-    localStorage.setItem("users", JSON.stringify(users));
-    location.href = "user.html";
-  }
+  } else alert("Invalid admin credentials");
 }
 
-// ---------- USER BIDS ----------
-function placeBid(type) {
-  if (!bids[type]) bids[type] = [];
+/******** USER OTP LOGIN ********/
+function sendOTP() {
+  if (!userEmail.value) return alert("Enter email");
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  localStorage.setItem("otp", otp);
+  alert("OTP (demo): " + otp);
+}
 
-  const name = document.getElementById(type[0] + "Name").value;
-  const price = Number(document.getElementById(type[0] + "Price").value);
+function verifyOTP() {
+  if (otpInput.value === localStorage.getItem("otp")) {
+    localStorage.setItem("role", "user");
+    location.href = "user.html";
+  } else alert("Wrong OTP");
+}
+
+/******** PLACE BIDS ********/
+function placeBid(type, nameId, priceId) {
+  const name = document.getElementById(nameId).value;
+  const price = Number(document.getElementById(priceId).value);
+  if (!name || !price) return alert("Fill all fields");
 
   bids[type].push({ name, price });
   localStorage.setItem("bids", JSON.stringify(bids));
-  alert("Bid Placed");
+  alert("Bid submitted");
 }
 
-function placeMulti() {
-  if (!bids.multi) bids.multi = [];
-  const name = mName.value;
-  const score = Number(mPrice.value) + Number(mPoints.value);
-  bids.multi.push({ name, score });
+function placeMultiBid() {
+  const name = m_name.value;
+  const price = Number(m_price.value);
+  const points = Number(m_points.value);
+  if (!name || !price || !points) return alert("Fill all fields");
+
+  bids.multi.push({ name, price, points, score: price + points });
   localStorage.setItem("bids", JSON.stringify(bids));
-  alert("Bid Placed");
+  alert("Bid submitted");
 }
 
-// ---------- ADMIN PANEL ----------
+/******** TIMERS ********/
+function startTimer(id, sec) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let t = sec;
+  const i = setInterval(() => {
+    el.innerText = `⏱ ${t}s`;
+    if (--t < 0) {
+      clearInterval(i);
+      el.innerText = "Closed";
+    }
+  }, 1000);
+}
+
+startTimer("t_high", 60);
+startTimer("t_low", 70);
+startTimer("t_sealed", 80);
+startTimer("t_multi", 90);
+
+/******** ADMIN LOAD ********/
 if (location.pathname.includes("admin")) {
-  document.getElementById("users").innerText = users.length;
+  const winners = {
+    highest: bids.highest.sort((a,b)=>b.price-a.price)[0],
+    lowest: bids.lowest.sort((a,b)=>a.price-b.price)[0],
+    sealed: bids.sealed.sort((a,b)=>b.price-a.price)[1],
+    multi: bids.multi.sort((a,b)=>b.score-a.score)[0]
+  };
 
-  let result = "";
-  for (let k in bids) {
-    let winner;
-    if (k === "lowest")
-      winner = bids[k].sort((a,b)=>a.price-b.price)[0];
-    else if (k === "multi")
-      winner = bids[k].sort((a,b)=>b.score-a.score)[0];
-    else
-      winner = bids[k].sort((a,b)=>b.price-a.price)[0];
+  totalUsers.innerText =
+    new Set(
+      [].concat(
+        bids.highest,bids.lowest,bids.sealed,bids.multi
+      ).map(b=>b.name)
+    ).size;
 
-    if (winner)
-      result += `${k.toUpperCase()} → ${winner.name}\n`;
-  }
-  document.getElementById("winners").innerText = result;
+  allBids.innerText = JSON.stringify(bids, null, 2);
+  winners.innerText = JSON.stringify(winners, null, 2);
 }

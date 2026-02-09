@@ -5,44 +5,56 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>User Panel</h1>
 
-    <div class="card-grid">
+<div class="dashboard">
+  <h2>User Dashboard</h2>
 
-      <div class="card">
-        <h3>Highest Bid</h3>
-        <input id="hName" placeholder="Name">
-        <input id="hPrice" placeholder="Bid Amount">
-        <button onclick="placeBid('highest')">Place Bid</button>
-      </div>
+  <div class="grid">
 
-      <div class="card">
-        <h3>Lowest Bid</h3>
-        <input id="lName" placeholder="Name">
-        <input id="lPrice" placeholder="Bid Amount">
-        <button onclick="placeBid('lowest')">Place Bid</button>
-      </div>
-
-      <div class="card">
-        <h3>Sealed Bid</h3>
-        <input id="sName" placeholder="Name">
-        <input id="sPrice" placeholder="Bid Amount">
-        <button onclick="placeBid('sealed')">Place Bid</button>
-      </div>
-
-      <div class="card">
-        <h3>Multivariable Bidding</h3>
-        <input id="mName" placeholder="Name">
-        <input id="mPrice" placeholder="Price">
-        <input id="mPoints" placeholder="Points">
-        <button onclick="placeMulti()">Place Bid</button>
-      </div>
-
+    <!-- Highest Bid -->
+    <div class="card">
+      <h3>Highest Bid</h3>
+      <input id="h_name" placeholder="Name">
+      <input id="h_price" type="number" placeholder="Price">
+      <button onclick="placeBid('highest','h_name','h_price')">Bid</button>
+      <p id="t_high"></p>
+      <small>Worst Case: O(n log n)</small>
     </div>
+
+    <!-- Lowest Bid -->
+    <div class="card">
+      <h3>Lowest Bid</h3>
+      <input id="l_name" placeholder="Name">
+      <input id="l_price" type="number" placeholder="Price">
+      <button onclick="placeBid('lowest','l_name','l_price')">Bid</button>
+      <p id="t_low"></p>
+      <small>Worst Case: O(n log n)</small>
+    </div>
+
+    <!-- Sealed Bid -->
+    <div class="card">
+      <h3>Sealed Bid (2nd Highest)</h3>
+      <input id="s_name" placeholder="Name">
+      <input id="s_price" type="number" placeholder="Price">
+      <button onclick="placeBid('sealed','s_name','s_price')">Bid</button>
+      <p id="t_sealed"></p>
+      <small>Worst Case: O(n log n)</small>
+    </div>
+
+    <!-- Multivariable -->
+    <div class="card">
+      <h3>Multivariable Bid</h3>
+      <input id="m_name" placeholder="Name">
+      <input id="m_price" type="number" placeholder="Price">
+      <input id="m_points" type="number" placeholder="Points">
+      <button onclick="placeMultiBid()">Bid</button>
+      <p id="t_multi"></p>
+      <small>Worst Case: O(n log n)</small>
+    </div>
+
   </div>
+</div>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
-
 </html>
