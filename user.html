@@ -11,37 +11,49 @@
 
   <div class="grid">
 
-    <div class="card bid-card">
+    <!-- Highest -->
+    <div class="card bid-card" style="padding:14px;transform:scale(0.92)">
       <h3>Highest Bid</h3>
       <input id="hName" placeholder="Name">
       <input id="hPrice" placeholder="Price">
       <button onclick="submitBid('highest')">Bid</button>
       <p>⏱ <span id="t1">59</span>s</p>
+      <p>🏆 Winner: <span id="w_highest">None</span></p>
+      <p>⚙ Complexity: O(n log n)</p>
     </div>
 
-    <div class="card bid-card">
+    <!-- Lowest -->
+    <div class="card bid-card" style="padding:14px;transform:scale(0.92)">
       <h3>Lowest Bid</h3>
       <input id="lName" placeholder="Name">
       <input id="lPrice" placeholder="Price">
       <button onclick="submitBid('lowest')">Bid</button>
       <p>⏱ <span id="t2">69</span>s</p>
+      <p>🏆 Winner: <span id="w_lowest">None</span></p>
+      <p>⚙ Complexity: O(n log n)</p>
     </div>
 
-    <div class="card bid-card">
+    <!-- Second Secret -->
+    <div class="card bid-card" style="padding:14px;transform:scale(0.92)">
       <h3>Second Secret</h3>
       <input id="sName" placeholder="Name">
       <input id="sPrice" placeholder="Price">
       <button onclick="submitBid('secret')">Bid</button>
       <p>⏱ <span id="t3">79</span>s</p>
+      <p>🏆 Winner: <span id="w_secret">None</span></p>
+      <p>⚙ Complexity: O(n log n)</p>
     </div>
 
-    <div class="card bid-card">
+    <!-- Multivariable -->
+    <div class="card bid-card" style="padding:14px;transform:scale(0.92)">
       <h3>Multivariable</h3>
       <input id="mName" placeholder="Name">
       <input id="mPrice" placeholder="Price">
       <input id="mPoints" placeholder="Points">
       <button onclick="submitBid('multi')">Bid</button>
       <p>⏱ <span id="t4">89</span>s</p>
+      <p>🏆 Winner: <span id="w_multi">None</span></p>
+      <p>⚙ Complexity: O(n log n)</p>
     </div>
 
   </div>
