@@ -1,116 +1,80 @@
-/******** ADMIN CREDENTIALS ********/
-const ADMIN_USER = "preesuzz";
-const ADMIN_PASS = "50sodaa";
-
-/******** STORAGE ********/
-let bids = JSON.parse(localStorage.getItem("bids")) || {
-  highest: [],
-  lowest: [],
-  sealed: [],
-  multi: []
-};
-
-/******** ADMIN LOGIN (FIXED) ********/
+/***********************
+ ADMIN LOGIN LOGIC
+***********************/
 function adminLogin() {
-  const username = document.getElementById("adminUser").value.trim();
-  const password = document.getElementById("adminPass").value.trim();
+  const user = document.getElementById("adminUser").value.trim();
+  const pass = document.getElementById("adminPass").value.trim();
 
-  if (username === ADMIN_USER && password === ADMIN_PASS) {
-    localStorage.setItem("role", "admin");
-    location.href = "admin.html";
+  if (user === "preesuzz" && pass === "50sodaa") {
+    // clear admin inputs
+    document.getElementById("adminUser").value = "";
+    document.getElementById("adminPass").value = "";
+
+    window.location.href = "admin.html";
   } else {
     alert("Invalid admin credentials");
   }
 }
 
-/******** USER OTP LOGIN ********/
-function sendOTP() {
-  const email = document.getElementById("userEmail").value;
-  if (!email) return alert("Enter email");
+/***********************
+ USER LOGIN LOGIC
+***********************/
+function login() {
+  const username = document.getElementById("username").value.trim();
 
-  const otp = Math.floor(100000 + Math.random() * 900000);
-  localStorage.setItem("otp", otp);
-  alert("OTP (demo): " + otp);
+  if (!username) {
+    alert("Enter username");
+    return;
+  }
+
+  let users = Number(localStorage.getItem("usersCount")) || 0;
+  localStorage.setItem("usersCount", users + 1);
+
+  localStorage.setItem("currentUser", username);
+  localStorage.setItem("algorithmComplexity", "O(n)");
+
+  document.getElementById("username").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("otp").value = "";
+
+  window.location.href = "user.html";
 }
 
-function verifyOTP() {
-  if (document.getElementById("otpInput").value === localStorage.getItem("otp")) {
-    localStorage.setItem("role", "user");
-    location.href = "user.html";
-  } else alert("Wrong OTP");
+/***********************
+ BID LOGIC
+***********************/
+function placeBid() {
+  const bidInput = document.getElementById("bidAmount");
+  const bid = Number(bidInput.value);
+  const user = localStorage.getItem("currentUser");
+
+  if (!bid || !user) {
+    alert("Invalid bid");
+    return;
+  }
+
+  let highestBid = Number(localStorage.getItem("highestBid")) || 0;
+
+  if (bid > highestBid) {
+    localStorage.setItem("highestBid", bid);
+    localStorage.setItem("currentWinner", user);
+  }
+
+  bidInput.value = "";
+  alert("Bid submitted successfully!");
 }
 
-/******** MESSAGE ********/
-function showMsg(text, error=false) {
-  const msg = document.getElementById("msg");
-  msg.style.color = error ? "red" : "#00ff99";
-  msg.innerText = text;
-  setTimeout(() => msg.innerText = "", 3000);
-}
+/***********************
+ ADMIN DASHBOARD LOAD
+***********************/
+window.onload = function () {
+  const users = document.getElementById("users");
+  const winner = document.getElementById("winner");
+  const complexity = document.getElementById("complexity");
 
-/******** PLACE BIDS ********/
-function placeBid(type, nameId, priceId) {
-  const n = document.getElementById(nameId);
-  const p = document.getElementById(priceId);
-
-  if (!n.value || !p.value) return showMsg("Fill all fields", true);
-
-  bids[type].push({ name: n.value, price: +p.value });
-  localStorage.setItem("bids", JSON.stringify(bids));
-
-  n.value = p.value = "";
-  showMsg("Bid submitted successfully ✅");
-}
-
-function placeMultiBid() {
-  if (!m_name.value || !m_price.value || !m_points.value)
-    return showMsg("Fill all fields", true);
-
-  bids.multi.push({
-    name: m_name.value,
-    price: +m_price.value,
-    points: +m_points.value,
-    score: +m_price.value + +m_points.value
-  });
-
-  localStorage.setItem("bids", JSON.stringify(bids));
-  m_name.value = m_price.value = m_points.value = "";
-  showMsg("Bid submitted successfully ✅");
-}
-
-/******** TIMERS ********/
-function startTimer(id, sec) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  let t = sec;
-  const i = setInterval(() => {
-    el.innerText = `⏱ ${t}s`;
-    if (--t < 0) {
-      clearInterval(i);
-      el.innerText = "Closed";
-    }
-  }, 1000);
-}
-
-startTimer("t_high",60);
-startTimer("t_low",70);
-startTimer("t_sealed",80);
-startTimer("t_multi",90);
-
-/******** ADMIN LOAD ********/
-if (location.pathname.includes("admin")) {
-  const winners = {
-    Highest: bids.highest.sort((a,b)=>b.price-a.price)[0] || "No bids",
-    Lowest: bids.lowest.sort((a,b)=>a.price-b.price)[0] || "No bids",
-    Sealed: bids.sealed.length>1 ? bids.sealed.sort((a,b)=>b.price-a.price)[1] : "Insufficient bids",
-    Multivariable: bids.multi.sort((a,b)=>b.score-a.score)[0] || "No bids"
-  };
-
-  const users = new Set(
-    [].concat(bids.highest,bids.lowest,bids.sealed,bids.multi).map(b=>b.name)
-  );
-
-  document.getElementById("totalUsers").innerText = users.size;
-  document.getElementById("winners").innerText =
-    JSON.stringify(winners,null,2);
-}
+  if (users) users.innerText = localStorage.getItem("usersCount") || 0;
+  if (winner) winner.innerText = localStorage.getItem("currentWinner") || "None";
+  if (complexity)
+    complexity.innerText =
+      localStorage.getItem("algorithmComplexity") || "O(n)";
+};

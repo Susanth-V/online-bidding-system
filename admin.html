@@ -3,30 +3,15 @@
 <head>
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="style.css">
-  <script>
-    if (localStorage.getItem("role") !== "admin") {
-      alert("Unauthorized access");
-      location.href = "index.html";
-    }
-  </script>
 </head>
 <body>
 
-<div class="container">
-  <h2>Admin Panel</h2>
+<div class="card small-card">
+  <h2>Admin Dashboard</h2>
 
-  <p><b>Total Users:</b> <span id="totalUsers">0</span></p>
-
-  <h3>Current Winners</h3>
-  <pre id="winners"></pre>
-
-  <h3>Worst Case Time Complexity</h3>
-  <pre>
-Highest Bid        : O(n log n)
-Lowest Bid         : O(n log n)
-Sealed Bid         : O(n log n)
-Multivariable Bid  : O(n log n)
-  </pre>
+  <p>Total Users: <span id="users"></span></p>
+  <p>Current Winner: <span id="winner"></span></p>
+  <p>Algorithm Complexity: <span id="complexity"></span></p>
 </div>
 
 <script src="script.js"></script>
