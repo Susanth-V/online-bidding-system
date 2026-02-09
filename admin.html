@@ -1,58 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>User Dashboard</title>
+  <title>Bidding System Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="dashboard">
-  <h2>User Dashboard</h2>
+<div class="container">
+  <h2>Login</h2>
 
-  <div class="grid">
+  <h3>Admin Login</h3>
+  <input id="adminUser" placeholder="Username">
+  <input id="adminPass" type="password" placeholder="Password">
+  <button onclick="adminLogin()">Login as Admin</button>
 
-    <!-- Highest Bid -->
-    <div class="card">
-      <h3>Highest Bid</h3>
-      <input id="h_name" placeholder="Name">
-      <input id="h_price" type="number" placeholder="Price">
-      <button onclick="placeBid('highest','h_name','h_price')">Bid</button>
-      <p id="t_high"></p>
-      <small>Worst Case: O(n log n)</small>
-    </div>
+  <hr>
 
-    <!-- Lowest Bid -->
-    <div class="card">
-      <h3>Lowest Bid</h3>
-      <input id="l_name" placeholder="Name">
-      <input id="l_price" type="number" placeholder="Price">
-      <button onclick="placeBid('lowest','l_name','l_price')">Bid</button>
-      <p id="t_low"></p>
-      <small>Worst Case: O(n log n)</small>
-    </div>
+  <h3>User Login (Email + OTP)</h3>
+  <input id="userEmail" placeholder="Email">
+  <button onclick="sendOTP()">Send OTP</button>
 
-    <!-- Sealed Bid -->
-    <div class="card">
-      <h3>Sealed Bid (2nd Highest)</h3>
-      <input id="s_name" placeholder="Name">
-      <input id="s_price" type="number" placeholder="Price">
-      <button onclick="placeBid('sealed','s_name','s_price')">Bid</button>
-      <p id="t_sealed"></p>
-      <small>Worst Case: O(n log n)</small>
-    </div>
-
-    <!-- Multivariable -->
-    <div class="card">
-      <h3>Multivariable Bid</h3>
-      <input id="m_name" placeholder="Name">
-      <input id="m_price" type="number" placeholder="Price">
-      <input id="m_points" type="number" placeholder="Points">
-      <button onclick="placeMultiBid()">Bid</button>
-      <p id="t_multi"></p>
-      <small>Worst Case: O(n log n)</small>
-    </div>
-
-  </div>
+  <input id="otpInput" placeholder="Enter OTP">
+  <button onclick="verifyOTP()">Verify OTP</button>
 </div>
 
 <script src="script.js"></script>

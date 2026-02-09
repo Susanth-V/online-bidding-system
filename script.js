@@ -1,95 +1,66 @@
-/******** ADMIN CREDENTIALS ********/
-const ADMIN_USER = "preesuzz";
-const ADMIN_PASS = "50sodaa";
-
-/******** STORAGE ********/
-let bids = JSON.parse(localStorage.getItem("bids")) || {
-  highest: [],
-  lowest: [],
-  sealed: [],
-  multi: []
-};
-
-/******** ADMIN LOGIN ********/
-function adminLogin() {
-  if (adminUser.value === ADMIN_USER && adminPass.value === ADMIN_PASS) {
-    localStorage.setItem("role", "admin");
-    location.href = "admin.html";
-  } else alert("Invalid admin credentials");
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
-/******** USER OTP LOGIN ********/
-function sendOTP() {
-  if (!userEmail.value) return alert("Enter email");
-  const otp = Math.floor(100000 + Math.random() * 900000);
-  localStorage.setItem("otp", otp);
-  alert("OTP (demo): " + otp);
+body {
+  background: linear-gradient(135deg, #1d2671, #c33764);
+  min-height: 100vh;
+  margin: 0;
+  color: #fff;
 }
 
-function verifyOTP() {
-  if (otpInput.value === localStorage.getItem("otp")) {
-    localStorage.setItem("role", "user");
-    location.href = "user.html";
-  } else alert("Wrong OTP");
+.container, .dashboard {
+  background: rgba(0,0,0,0.35);
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 900px;
+  margin: 40px auto;
 }
 
-/******** PLACE BIDS ********/
-function placeBid(type, nameId, priceId) {
-  const name = document.getElementById(nameId).value;
-  const price = Number(document.getElementById(priceId).value);
-  if (!name || !price) return alert("Fill all fields");
-
-  bids[type].push({ name, price });
-  localStorage.setItem("bids", JSON.stringify(bids));
-  alert("Bid submitted");
+h2 {
+  text-align: center;
 }
 
-function placeMultiBid() {
-  const name = m_name.value;
-  const price = Number(m_price.value);
-  const points = Number(m_points.value);
-  if (!name || !price || !points) return alert("Fill all fields");
-
-  bids.multi.push({ name, price, points, score: price + points });
-  localStorage.setItem("bids", JSON.stringify(bids));
-  alert("Bid submitted");
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 6px;
+  border: none;
 }
 
-/******** TIMERS ********/
-function startTimer(id, sec) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  let t = sec;
-  const i = setInterval(() => {
-    el.innerText = `⏱ ${t}s`;
-    if (--t < 0) {
-      clearInterval(i);
-      el.innerText = "Closed";
-    }
-  }, 1000);
+button {
+  background: #ff9800;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-startTimer("t_high", 60);
-startTimer("t_low", 70);
-startTimer("t_sealed", 80);
-startTimer("t_multi", 90);
+button:hover {
+  background: #ffc107;
+}
 
-/******** ADMIN LOAD ********/
-if (location.pathname.includes("admin")) {
-  const winners = {
-    highest: bids.highest.sort((a,b)=>b.price-a.price)[0],
-    lowest: bids.lowest.sort((a,b)=>a.price-b.price)[0],
-    sealed: bids.sealed.sort((a,b)=>b.price-a.price)[1],
-    multi: bids.multi.sort((a,b)=>b.score-a.score)[0]
-  };
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
 
-  totalUsers.innerText =
-    new Set(
-      [].concat(
-        bids.highest,bids.lowest,bids.sealed,bids.multi
-      ).map(b=>b.name)
-    ).size;
+.card {
+  background: rgba(0,0,0,0.45);
+  padding: 15px;
+  border-radius: 10px;
+}
 
-  allBids.innerText = JSON.stringify(bids, null, 2);
-  winners.innerText = JSON.stringify(winners, null, 2);
+small {
+  display: block;
+  text-align: center;
+  margin-top: 5px;
+}
+
+pre {
+  background: #000;
+  padding: 10px;
+  border-radius: 6px;
 }
