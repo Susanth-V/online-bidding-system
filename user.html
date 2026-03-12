@@ -6,57 +6,26 @@
 </head>
 <body>
 
-<div class="dashboard">
-  <h1 class="dashboard-title">User Dashboard</h1>
+<div class="card small-card">
 
-  <div class="grid">
+  <h2>Current Auction</h2>
 
-    <!-- Highest -->
-    <div class="card bid-card" style="padding:14px;transform:scale(0.92)">
-      <h3>Highest Bid</h3>
-      <input id="hName" placeholder="Name">
-      <input id="hPrice" placeholder="Price">
-      <button onclick="submitBid('highest')">Bid</button>
-      <p>⏱ <span id="t1">59</span>s</p>
-      <p>🏆 Winner: <span id="w_highest">None</span></p>
-      <p>⚙ Complexity: O(n log n)</p>
-    </div>
+  <p id="auctionStatus">Waiting for auction...</p>
+  <h3 id="timer">60s</h3>
 
-    <!-- Lowest -->
-    <div class="card bid-card" style="padding:14px;transform:scale(0.92)">
-      <h3>Lowest Bid</h3>
-      <input id="lName" placeholder="Name">
-      <input id="lPrice" placeholder="Price">
-      <button onclick="submitBid('lowest')">Bid</button>
-      <p>⏱ <span id="t2">69</span>s</p>
-      <p>🏆 Winner: <span id="w_lowest">None</span></p>
-      <p>⚙ Complexity: O(n log n)</p>
-    </div>
+  <button onclick="startAuction()">Start Auction</button>
 
-    <!-- Second Secret -->
-    <div class="card bid-card" style="padding:14px;transform:scale(0.92)">
-      <h3>Second Secret</h3>
-      <input id="sName" placeholder="Name">
-      <input id="sPrice" placeholder="Price">
-      <button onclick="submitBid('secret')">Bid</button>
-      <p>⏱ <span id="t3">79</span>s</p>
-      <p>🏆 Winner: <span id="w_secret">None</span></p>
-      <p>⚙ Complexity: O(n log n)</p>
-    </div>
+  <hr>
 
-    <!-- Multivariable -->
-    <div class="card bid-card" style="padding:14px;transform:scale(0.92)">
-      <h3>Multivariable</h3>
-      <input id="mName" placeholder="Name">
-      <input id="mPrice" placeholder="Price">
-      <input id="mPoints" placeholder="Points">
-      <button onclick="submitBid('multi')">Bid</button>
-      <p>⏱ <span id="t4">89</span>s</p>
-      <p>🏆 Winner: <span id="w_multi">None</span></p>
-      <p>⚙ Complexity: O(n log n)</p>
-    </div>
+  <h2>Place Your Bid</h2>
 
-  </div>
+  <input id="bidAmount" placeholder="Enter bid amount">
+  <button onclick="placeBid()">Bid</button>
+
+  <p style="margin-top:15px;font-size:14px;">
+    Worst Case: <b>O(n)</b>
+  </p>
+
 </div>
 
 <script src="script.js"></script>

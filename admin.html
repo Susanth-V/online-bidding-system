@@ -10,10 +10,32 @@
   <h2>Admin Dashboard</h2>
 
   <p>Total Users: <span id="users"></span></p>
-  <p>Highest Winner: <span id="winner_highest"></span></p>
-  <p>Lowest Winner: <span id="winner_lowest"></span></p>
-  <p>Secret Winner: <span id="winner_secret"></span></p>
-  <p>Multi Winner: <span id="winner_multi"></span></p>
+  <p>Current Winner: <span id="winner"></span></p>
+  <p>Algorithm Complexity: <span id="complexity"></span></p>
+
+  <hr>
+
+  <h3>Bid History</h3>
+  <table id="history"></table>
+  <button onclick="loadBidHistory()">Refresh History</button>
+
+  <hr>
+
+  <h3>Create User / Auctioneer</h3>
+  <input id="newUser" placeholder="Username">
+  <input id="newPass" placeholder="Password">
+
+  <select id="role">
+    <option value="user">User</option>
+    <option value="auctioneer">Auctioneer</option>
+  </select>
+
+  <button onclick="createUser()">Create</button>
+
+  <h3>Delete User</h3>
+  <input id="deleteUserInput" placeholder="Username">
+  <button onclick="deleteUser()">Delete</button>
+
 </div>
 
 <script src="script.js"></script>
