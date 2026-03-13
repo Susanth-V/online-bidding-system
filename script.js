@@ -1,7 +1,7 @@
 /***********************
  ADMIN LOGIN
 ***********************/
-function adminLogin() {
+function adminLogin(){
 
 const user=document.getElementById("adminUser").value.trim();
 const pass=document.getElementById("adminPass").value.trim();
@@ -31,14 +31,34 @@ alert("Invalid auctioneer credentials");
 }
 
 /***********************
+ OTP GENERATION
+***********************/
+function generateOTP(){
+
+const otp=Math.floor(100000 + Math.random()*900000);
+
+localStorage.setItem("generatedOTP",otp);
+
+alert("Your OTP is: "+otp);
+
+}
+
+/***********************
  USER LOGIN
 ***********************/
 function login(){
 
 const username=document.getElementById("username").value.trim();
+const enteredOTP=document.getElementById("otp").value;
+const storedOTP=localStorage.getItem("generatedOTP");
 
 if(!username){
 alert("Enter username");
+return;
+}
+
+if(enteredOTP!==storedOTP){
+alert("Invalid OTP");
 return;
 }
 
@@ -66,8 +86,8 @@ return;
 }
 
 localStorage.setItem("auctionType",type);
-localStorage.setItem("auctionTime",time);
 localStorage.setItem("auctionRunning","true");
+localStorage.setItem("auctionTime",time);
 localStorage.setItem("bidHistory",JSON.stringify([]));
 
 startTimer();
@@ -93,6 +113,7 @@ timer.innerText=time+"s";
 if(time<=0){
 
 clearInterval(interval);
+
 localStorage.setItem("auctionRunning","false");
 
 calculateWinner();
@@ -111,7 +132,7 @@ timer.innerText="Auction Ended";
 function placeBid(){
 
 if(localStorage.getItem("auctionRunning")!=="true"){
-alert("Auction not running");
+alert("Auction has not started yet");
 return;
 }
 
@@ -126,13 +147,16 @@ return;
 
 saveBidHistory(user,bid);
 
+updateWinnerLive();
+
 bidInput.value="";
-alert("Bid placed");
+
+alert("Bid placed successfully");
 
 }
 
 /***********************
- SAVE HISTORY
+ SAVE BID HISTORY
 ***********************/
 function saveBidHistory(user,bid){
 
@@ -145,59 +169,9 @@ localStorage.setItem("bidHistory",JSON.stringify(history));
 }
 
 /***********************
- LOAD HISTORY
+ LIVE WINNER UPDATE
 ***********************/
-function loadAuctionHistory(){
-
-const table=document.getElementById("auctionHistory");
-
-if(!table) return;
-
-const history=JSON.parse(localStorage.getItem("bidHistory"))||[];
-
-table.innerHTML="<tr><th>User</th><th>Bid</th></tr>";
-
-history.forEach(b=>{
-
-const row=document.createElement("tr");
-
-row.innerHTML="<td>"+b.user+"</td><td>"+b.bid+"</td>";
-
-table.appendChild(row);
-
-});
-
-}
-
-/***********************
- USER VIEW HISTORY
-***********************/
-function loadUserHistory(){
-
-const table=document.getElementById("userHistory");
-
-if(!table) return;
-
-const history=JSON.parse(localStorage.getItem("bidHistory"))||[];
-
-table.innerHTML="<tr><th>User</th><th>Bid</th></tr>";
-
-history.forEach(b=>{
-
-const row=document.createElement("tr");
-
-row.innerHTML="<td>"+b.user+"</td><td>"+b.bid+"</td>";
-
-table.appendChild(row);
-
-});
-
-}
-
-/***********************
- CALCULATE WINNER
-***********************/
-function calculateWinner(){
+function updateWinnerLive(){
 
 const type=localStorage.getItem("auctionType");
 const history=JSON.parse(localStorage.getItem("bidHistory"))||[];
@@ -228,32 +202,87 @@ localStorage.setItem("currentWinner",winner);
 }
 
 /***********************
- REMOVE USER
+ FINAL WINNER
 ***********************/
-function auctioneerRemoveUser(){
+function calculateWinner(){
 
-const name=document.getElementById("removeUser").value;
-
-let users=JSON.parse(localStorage.getItem("systemUsers"))||[];
-
-users=users.filter(u=>u.username!==name);
-
-localStorage.setItem("systemUsers",JSON.stringify(users));
-
-alert("User removed");
+updateWinnerLive();
 
 }
 
 /***********************
- UPDATE USER PANEL
+ LOAD HISTORY
+***********************/
+function loadAuctionHistory(){
+
+const table=document.getElementById("auctionHistory");
+
+if(!table) return;
+
+const history=JSON.parse(localStorage.getItem("bidHistory"))||[];
+
+table.innerHTML="<tr><th>User</th><th>Bid</th></tr>";
+
+history.forEach(b=>{
+
+const row=document.createElement("tr");
+
+row.innerHTML="<td>"+b.user+"</td><td>"+b.bid+"</td>";
+
+table.appendChild(row);
+
+});
+
+}
+
+/***********************
+ USER HISTORY
+***********************/
+function loadUserHistory(){
+
+const table=document.getElementById("userHistory");
+
+if(!table) return;
+
+const history=JSON.parse(localStorage.getItem("bidHistory"))||[];
+
+table.innerHTML="<tr><th>User</th><th>Bid</th></tr>";
+
+history.forEach(b=>{
+
+const row=document.createElement("tr");
+
+row.innerHTML="<td>"+b.user+"</td><td>"+b.bid+"</td>";
+
+table.appendChild(row);
+
+});
+
+}
+
+/***********************
+ USER PANEL UPDATE
 ***********************/
 function updateUserPanel(){
 
 const type=document.getElementById("userAuctionType");
 const winner=document.getElementById("userWinner");
+const status=document.getElementById("auctionStatus");
 
-if(type) type.innerText=localStorage.getItem("auctionType")||"None";
-if(winner) winner.innerText=localStorage.getItem("currentWinner")||"None";
+if(type) type.innerText=localStorage.getItem("auctionType") || "Not Started";
+
+if(winner) winner.innerText=localStorage.getItem("currentWinner") || "None";
+
+if(status){
+
+if(localStorage.getItem("auctionRunning")==="true"){
+status.innerText="Auction Running";
+}
+else{
+status.innerText="Auction Not Started";
+}
+
+}
 
 loadUserHistory();
 

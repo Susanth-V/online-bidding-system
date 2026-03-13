@@ -4,6 +4,7 @@
 <title>Admin Dashboard</title>
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <div class="card small-card">
@@ -17,6 +18,7 @@
 <hr>
 
 <h3>Create User / Auctioneer</h3>
+
 <input id="newUser" placeholder="Username">
 <input id="newPass" placeholder="Password">
 
@@ -28,17 +30,20 @@
 <button onclick="createUser()">Create</button>
 
 <h3>Delete User</h3>
+
 <input id="deleteUserInput" placeholder="Username">
 <button onclick="deleteUser()">Delete</button>
 
 <hr>
 
 <h3>Bid History</h3>
+
 <table id="history"></table>
 <button onclick="loadBidHistory()">Refresh</button>
 
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
