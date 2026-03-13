@@ -32,15 +32,31 @@ cursor:pointer;
 table{
 width:100%;
 margin-top:10px;
+border-collapse:collapse;
+}
+
+th,td{
+padding:6px;
+text-align:center;
+}
+
+.divider{
+height:1px;
+background:rgba(255,255,255,0.2);
+margin:15px 0;
 }
 
 .winner-highlight{
-color:gold;
-font-weight:bold;
-animation:pulse 1s infinite alternate;
+color:#ffd700;
+font-weight:700;
+animation:winnerPulse 1s infinite alternate;
 }
 
-@keyframes pulse{
-from{ text-shadow:0 0 5px gold;}
-to{ text-shadow:0 0 20px gold;}
+@keyframes winnerPulse{
+from{
+text-shadow:0 0 5px gold;
+}
+to{
+text-shadow:0 0 20px gold,0 0 30px gold;
+}
 }
