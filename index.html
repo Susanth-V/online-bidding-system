@@ -1,23 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Auction System</title>
+<title>Login</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="card">
+<div class="card small-card">
 
-<h1>Online Auction</h1>
+<h2>Admin Login</h2>
+<input id="adminUser" placeholder="Admin Username">
+<input id="adminPass" type="password" placeholder="Admin Password">
+<button onclick="adminLogin()">Login as Admin</button>
 
-<button onclick="location.href='admin-login.html'">Admin Login</button>
+<div class="divider"></div>
 
-<button onclick="location.href='auctioneer-login.html'">Auctioneer Login</button>
+<h2>Auctioneer Login</h2>
+<input id="auctioneerUser" placeholder="Auctioneer Username">
+<input id="auctioneerPass" type="password" placeholder="Password">
+<button onclick="auctioneerLogin()">Login as Auctioneer</button>
 
-<button onclick="location.href='user-login.html'">User Login</button>
+<div class="divider"></div>
+
+<h2>User Login</h2>
+
+<input id="username" placeholder="Username">
+<input id="email" placeholder="Email">
+<input id="otp" placeholder="Enter OTP">
+
+<button onclick="generateOTP()">Generate OTP</button>
+<button onclick="login()">Login as User</button>
 
 </div>
+
+<script src="script.js"></script>
 
 </body>
 </html>
