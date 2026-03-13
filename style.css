@@ -1,110 +1,46 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Arial, sans-serif;
+body{
+font-family:Arial;
+background:#111;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
 
-body {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #2b2d78, #7b2d6f, #a33a6a);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #ffffff;
+.card{
+background:#1c1c1c;
+padding:30px;
+border-radius:10px;
+width:320px;
+text-align:center;
 }
 
-.card {
-  background: linear-gradient(145deg, #1a0f2b, #2b123a);
-  border-radius: 14px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
-  animation: fadeInUp 0.8s ease;
-  text-align: center;
+input,select{
+width:100%;
+padding:8px;
+margin:8px 0;
 }
 
-.small-card {
-  width: 320px;
-  padding: 22px 24px;
-}
-
-.card h2 {
-  margin-bottom: 16px;
-  font-weight: 600;
-}
-
-input {
-  width: 100%;
-  padding: 10px 12px;
-  margin: 8px 0;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-  font-size: 14px;
-}
-
-button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px;
-  background: #ff9f0a;
-  color: #000;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-button:hover {
-  box-shadow: 0 6px 14px rgba(255, 159, 10, 0.4);
-}
-
-.card p {
-  margin: 10px 0;
-}
-
-.card span {
-  font-weight: 600;
-  color: #ffb347;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.divider{
-height:1px;
-background:rgba(255,255,255,0.2);
-margin:15px 0;
+button{
+padding:10px;
+width:100%;
+margin-top:10px;
+cursor:pointer;
 }
 
 table{
 width:100%;
 margin-top:10px;
-border-collapse:collapse;
-}
-
-th,td{
-padding:6px;
-text-align:center;
 }
 
 .winner-highlight{
-color:#ffd700;
-font-weight:700;
-animation: winnerPulse 1s infinite alternate;
+color:gold;
+font-weight:bold;
+animation:pulse 1s infinite alternate;
 }
 
-@keyframes winnerPulse{
-from{
-text-shadow:0 0 5px gold;
-}
-to{
-text-shadow:0 0 20px gold,0 0 30px gold;
-}
+@keyframes pulse{
+from{ text-shadow:0 0 5px gold;}
+to{ text-shadow:0 0 20px gold;}
 }

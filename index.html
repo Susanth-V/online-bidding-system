@@ -1,39 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Login</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
+.divider{
+height:1px;
+background:rgba(255,255,255,0.2);
+margin:15px 0;
+}
 
-<div class="card small-card">
+table{
+width:100%;
+margin-top:10px;
+border-collapse:collapse;
+}
 
-<h2>Admin Login</h2>
-<input id="adminUser" placeholder="Admin Username">
-<input id="adminPass" type="password" placeholder="Admin Password">
-<button onclick="adminLogin()">Login as Admin</button>
+th,td{
+padding:6px;
+text-align:center;
+}
 
-<div class="divider"></div>
+.winner-highlight{
+color:#ffd700;
+font-weight:700;
+animation:winnerPulse 1s infinite alternate;
+}
 
-<h2>Auctioneer Login</h2>
-<input id="auctioneerUser" placeholder="Auctioneer Username">
-<input id="auctioneerPass" type="password" placeholder="Password">
-<button onclick="auctioneerLogin()">Login as Auctioneer</button>
+@keyframes winnerPulse{
 
-<div class="divider"></div>
+from{
+text-shadow:0 0 5px gold;
+}
 
-<h2>User Login</h2>
+to{
+text-shadow:0 0 20px gold,0 0 30px gold;
+}
 
-<input id="username" placeholder="Username">
-<input id="email" placeholder="Email">
-<input id="otp" placeholder="Enter OTP">
-
-<button onclick="generateOTP()">Generate OTP</button>
-<button onclick="login()">Login as User</button>
-
-</div>
-
-<script src="script.js"></script>
-
-</body>
-</html>
+}

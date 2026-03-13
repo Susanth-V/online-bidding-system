@@ -7,15 +7,9 @@
 
 <body>
 
-<div class="card small-card">
+<div class="card">
 
 <h2>Admin Dashboard</h2>
-
-<p>Total Users: <span id="users"></span></p>
-<p>Current Winner: <span id="winner"></span></p>
-<p>Algorithm Complexity: <span id="complexity"></span></p>
-
-<hr>
 
 <h3>Create User / Auctioneer</h3>
 
@@ -29,17 +23,13 @@
 
 <button onclick="createUser()">Create</button>
 
-<h3>Delete User</h3>
-
-<input id="deleteUserInput" placeholder="Username">
-<button onclick="deleteUser()">Delete</button>
-
 <hr>
 
-<h3>Bid History</h3>
+<h3>Remove User / Auctioneer</h3>
 
-<table id="history"></table>
-<button onclick="loadBidHistory()">Refresh</button>
+<input id="deleteUserInput" placeholder="Username">
+
+<button onclick="deleteUser()">Delete</button>
 
 </div>
 
