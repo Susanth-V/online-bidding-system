@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>User Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+<title>User Dashboard</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="card small-card">
 
-  <h2>Current Auction</h2>
+<h2>Current Auction</h2>
 
-  <p id="auctionStatus">Waiting for auction...</p>
-  <h3 id="timer">60s</h3>
+<p>Type: <span id="userAuctionType"></span></p>
+<p>Winner: <span id="userWinner" class="winner-highlight"></span></p>
 
-  <button onclick="startAuction()">Start Auction</button>
+<hr>
 
-  <hr>
+<h3>Bid History</h3>
+<table id="userHistory"></table>
 
-  <h2>Place Your Bid</h2>
+<hr>
 
-  <input id="bidAmount" placeholder="Enter bid amount">
-  <button onclick="placeBid()">Bid</button>
+<h2>Place Your Bid</h2>
 
-  <p style="margin-top:15px;font-size:14px;">
-    Worst Case: <b>O(n)</b>
-  </p>
+<input id="bidAmount" placeholder="Enter bid amount">
+<button onclick="placeBid()">Bid</button>
+
+<p style="margin-top:15px;font-size:14px;">
+Worst Case: <b>O(n)</b>
+</p>
 
 </div>
 

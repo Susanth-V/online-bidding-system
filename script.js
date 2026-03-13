@@ -1,73 +1,77 @@
 /***********************
- ADMIN LOGIN LOGIC
+ ADMIN LOGIN
 ***********************/
 function adminLogin() {
-  const user = document.getElementById("adminUser").value.trim();
-  const pass = document.getElementById("adminPass").value.trim();
 
-  if (user === "preesuzz" && pass === "50sodaa") {
-    document.getElementById("adminUser").value = "";
-    document.getElementById("adminPass").value = "";
-    window.location.href = "admin.html";
-  } else {
-    alert("Invalid admin credentials");
-  }
+const user=document.getElementById("adminUser").value.trim();
+const pass=document.getElementById("adminPass").value.trim();
+
+if(user==="preesuzz" && pass==="50sodaa"){
+window.location.href="admin.html";
+}else{
+alert("Invalid admin credentials");
+}
+
 }
 
 /***********************
  AUCTIONEER LOGIN
 ***********************/
-function auctioneerLogin() {
+function auctioneerLogin(){
 
-  const user = document.getElementById("auctioneerUser").value.trim();
-  const pass = document.getElementById("auctioneerPass").value.trim();
+const user=document.getElementById("auctioneerUser").value.trim();
+const pass=document.getElementById("auctioneerPass").value.trim();
 
-  if (user === "preesuzz" && pass === "50sodaa") {
+if(user==="preesuzz" && pass==="50sodaa"){
+window.location.href="auctioneer.html";
+}else{
+alert("Invalid auctioneer credentials");
+}
 
-    localStorage.setItem("auctioneer", "true");
-
-    window.location.href = "user.html";
-
-  } else {
-    alert("Invalid auctioneer credentials");
-  }
 }
 
 /***********************
- USER LOGIN LOGIC
+ USER LOGIN
 ***********************/
-function login() {
-  const username = document.getElementById("username").value.trim();
+function login(){
 
-  if (!username) {
-    alert("Enter username");
-    return;
-  }
+const username=document.getElementById("username").value.trim();
 
-  let users = Number(localStorage.getItem("usersCount")) || 0;
-  localStorage.setItem("usersCount", users + 1);
+if(!username){
+alert("Enter username");
+return;
+}
 
-  localStorage.setItem("currentUser", username);
-  localStorage.setItem("algorithmComplexity", "O(n)");
+let users=Number(localStorage.getItem("usersCount"))||0;
 
-  document.getElementById("username").value = "";
-  document.getElementById("email").value = "";
-  document.getElementById("otp").value = "";
+localStorage.setItem("usersCount",users+1);
+localStorage.setItem("currentUser",username);
+localStorage.setItem("algorithmComplexity","O(n)");
 
-  window.location.href = "user.html";
+window.location.href="user.html";
+
 }
 
 /***********************
  START AUCTION
 ***********************/
-function startAuction(){
+function startAuctioneerAuction(){
 
-  localStorage.setItem("auctionRunning","true");
-  localStorage.setItem("auctionTime",60);
-  localStorage.setItem("highestBid",0);
-  localStorage.setItem("currentWinner","");
+const type=document.getElementById("auctionType").value;
+const time=Number(document.getElementById("auctionTime").value);
 
-  startTimer();
+if(!time){
+alert("Enter auction time");
+return;
+}
+
+localStorage.setItem("auctionType",type);
+localStorage.setItem("auctionTime",time);
+localStorage.setItem("auctionRunning","true");
+localStorage.setItem("bidHistory",JSON.stringify([]));
+
+startTimer();
+
 }
 
 /***********************
@@ -75,165 +79,184 @@ function startAuction(){
 ***********************/
 function startTimer(){
 
-  let time=Number(localStorage.getItem("auctionTime"));
+let time=Number(localStorage.getItem("auctionTime"));
+const timer=document.getElementById("timer");
 
-  const timer=document.getElementById("timer");
-  const status=document.getElementById("auctionStatus");
+if(!timer) return;
 
-  if(!timer) return;
+const interval=setInterval(()=>{
 
-  status.innerText="Auction Running";
+time--;
 
-  const interval=setInterval(function(){
+timer.innerText=time+"s";
 
-    time--;
+if(time<=0){
 
-    timer.innerText=time+"s";
+clearInterval(interval);
+localStorage.setItem("auctionRunning","false");
 
-    if(time<=0){
+calculateWinner();
 
-      clearInterval(interval);
+timer.innerText="Auction Ended";
 
-      localStorage.setItem("auctionRunning","false");
+}
 
-      timer.innerText="Auction Ended";
-      status.innerText="Auction Finished";
-    }
+},1000);
 
-  },1000);
 }
 
 /***********************
  BID LOGIC
 ***********************/
-function placeBid() {
+function placeBid(){
 
-  if(localStorage.getItem("auctionRunning")!=="true"){
-    alert("Auction not running");
-    return;
-  }
+if(localStorage.getItem("auctionRunning")!=="true"){
+alert("Auction not running");
+return;
+}
 
-  const bidInput = document.getElementById("bidAmount");
-  const bid = Number(bidInput.value);
-  const user = localStorage.getItem("currentUser");
+const bidInput=document.getElementById("bidAmount");
+const bid=Number(bidInput.value);
+const user=localStorage.getItem("currentUser");
 
-  if (!bid || !user) {
-    alert("Invalid bid");
-    return;
-  }
+if(!bid || !user){
+alert("Invalid bid");
+return;
+}
 
-  let highestBid = Number(localStorage.getItem("highestBid")) || 0;
+saveBidHistory(user,bid);
 
-  if (bid > highestBid) {
-    localStorage.setItem("highestBid", bid);
-    localStorage.setItem("currentWinner", user);
-  }
+bidInput.value="";
+alert("Bid placed");
 
-  saveBidHistory(user,bid);
-
-  bidInput.value = "";
-  alert("Bid submitted successfully!");
 }
 
 /***********************
- STORE BID HISTORY
+ SAVE HISTORY
 ***********************/
 function saveBidHistory(user,bid){
 
-  let history = JSON.parse(localStorage.getItem("bidHistory")) || [];
+let history=JSON.parse(localStorage.getItem("bidHistory"))||[];
 
-  history.push({
-    user:user,
-    bid:bid,
-    time:new Date().toLocaleTimeString()
-  });
+history.push({user,bid});
 
-  localStorage.setItem("bidHistory",JSON.stringify(history));
+localStorage.setItem("bidHistory",JSON.stringify(history));
+
 }
 
 /***********************
- LOAD BID HISTORY
+ LOAD HISTORY
 ***********************/
-function loadBidHistory(){
+function loadAuctionHistory(){
 
-  const table=document.getElementById("history");
+const table=document.getElementById("auctionHistory");
 
-  if(!table) return;
+if(!table) return;
 
-  const history=JSON.parse(localStorage.getItem("bidHistory")) || [];
+const history=JSON.parse(localStorage.getItem("bidHistory"))||[];
 
-  table.innerHTML="";
+table.innerHTML="<tr><th>User</th><th>Bid</th></tr>";
 
-  history.forEach(function(item){
+history.forEach(b=>{
 
-    const row=document.createElement("tr");
+const row=document.createElement("tr");
 
-    row.innerHTML=
-      "<td>"+item.user+"</td>"+
-      "<td>"+item.bid+"</td>"+
-      "<td>"+item.time+"</td>";
+row.innerHTML="<td>"+b.user+"</td><td>"+b.bid+"</td>";
 
-    table.appendChild(row);
+table.appendChild(row);
 
-  });
+});
+
 }
 
 /***********************
- CREATE USER
+ USER VIEW HISTORY
 ***********************/
-function createUser(){
+function loadUserHistory(){
 
-  const user=document.getElementById("newUser").value;
-  const pass=document.getElementById("newPass").value;
-  const role=document.getElementById("role").value;
+const table=document.getElementById("userHistory");
 
-  let users=JSON.parse(localStorage.getItem("systemUsers")) || [];
+if(!table) return;
 
-  users.push({
-    username:user,
-    password:pass,
-    role:role
-  });
+const history=JSON.parse(localStorage.getItem("bidHistory"))||[];
 
-  localStorage.setItem("systemUsers",JSON.stringify(users));
+table.innerHTML="<tr><th>User</th><th>Bid</th></tr>";
 
-  alert("User created");
+history.forEach(b=>{
+
+const row=document.createElement("tr");
+
+row.innerHTML="<td>"+b.user+"</td><td>"+b.bid+"</td>";
+
+table.appendChild(row);
+
+});
+
 }
 
 /***********************
- DELETE USER
+ CALCULATE WINNER
 ***********************/
-function deleteUser(){
+function calculateWinner(){
 
-  const name=document.getElementById("deleteUserInput").value;
+const type=localStorage.getItem("auctionType");
+const history=JSON.parse(localStorage.getItem("bidHistory"))||[];
 
-  let users=JSON.parse(localStorage.getItem("systemUsers")) || [];
+if(history.length===0) return;
 
-  users = users.filter(function(u){
-    return u.username !== name;
-  });
+let winner;
 
-  localStorage.setItem("systemUsers",JSON.stringify(users));
+if(type==="high"){
+winner=history.reduce((a,b)=>a.bid>b.bid?a:b).user;
+}
 
-  alert("User deleted");
+else if(type==="low"){
+winner=history.reduce((a,b)=>a.bid<b.bid?a:b).user;
+}
+
+else if(type==="second"){
+const sorted=[...history].sort((a,b)=>b.bid-a.bid);
+winner=sorted.length>1?sorted[1].user:sorted[0].user;
+}
+
+else{
+winner=history.reduce((a,b)=>a.bid>b.bid?a:b).user;
+}
+
+localStorage.setItem("currentWinner",winner);
+
 }
 
 /***********************
- ADMIN DASHBOARD LOAD
+ REMOVE USER
 ***********************/
-window.onload = function () {
+function auctioneerRemoveUser(){
 
-  const users = document.getElementById("users");
-  const winner = document.getElementById("winner");
-  const complexity = document.getElementById("complexity");
+const name=document.getElementById("removeUser").value;
 
-  if (users) users.innerText = localStorage.getItem("usersCount") || 0;
-  if (winner) winner.innerText = localStorage.getItem("currentWinner") || "None";
-  if (complexity)
-    complexity.innerText =
-      localStorage.getItem("algorithmComplexity") || "O(n)";
+let users=JSON.parse(localStorage.getItem("systemUsers"))||[];
 
-  if(localStorage.getItem("auctionRunning")==="true"){
-    startTimer();
-  }
-};
+users=users.filter(u=>u.username!==name);
+
+localStorage.setItem("systemUsers",JSON.stringify(users));
+
+alert("User removed");
+
+}
+
+/***********************
+ UPDATE USER PANEL
+***********************/
+function updateUserPanel(){
+
+const type=document.getElementById("userAuctionType");
+const winner=document.getElementById("userWinner");
+
+if(type) type.innerText=localStorage.getItem("auctionType")||"None";
+if(winner) winner.innerText=localStorage.getItem("currentWinner")||"None";
+
+loadUserHistory();
+
+}
+
+setInterval(updateUserPanel,2000);

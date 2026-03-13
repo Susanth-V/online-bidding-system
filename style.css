@@ -77,3 +77,34 @@ button:hover {
     transform: translateY(0);
   }
 }
+.divider{
+height:1px;
+background:rgba(255,255,255,0.2);
+margin:15px 0;
+}
+
+table{
+width:100%;
+margin-top:10px;
+border-collapse:collapse;
+}
+
+th,td{
+padding:6px;
+text-align:center;
+}
+
+.winner-highlight{
+color:#ffd700;
+font-weight:700;
+animation: winnerPulse 1s infinite alternate;
+}
+
+@keyframes winnerPulse{
+from{
+text-shadow:0 0 5px gold;
+}
+to{
+text-shadow:0 0 20px gold,0 0 30px gold;
+}
+}
