@@ -12,22 +12,20 @@
 <h2>Auctioneer Panel</h2>
 
 <select id="auctionType">
-
 <option value="high">Highest Bid</option>
 <option value="low">Lowest Bid</option>
 <option value="second">Second Price</option>
-
 </select>
 
-<input id="auctionTime" placeholder="Auction Time (seconds)">
+<input id="auctionTime" placeholder="Auction time (seconds)">
 
 <button onclick="startAuction()">Start Auction</button>
 
-<hr>
+<div class="divider"></div>
 
-<p>Winner: <span id="winnerAuctioneer"></span></p>
-
-<hr>
+<p>Winner:
+<span id="winnerAuctioneer" class="winner-highlight"></span>
+</p>
 
 <table id="auctionHistory"></table>
 

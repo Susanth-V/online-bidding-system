@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>User Login</title>
+<title>Admin Login</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -9,19 +9,13 @@
 
 <div class="card">
 
-<h2>User Login</h2>
+<h2>Admin Login</h2>
 
-<input id="username" placeholder="Username">
+<input id="adminUser" placeholder="Username">
 
-<input id="email" placeholder="Email (for new user)">
+<input id="adminPass" type="password" placeholder="Password">
 
-<input id="password" placeholder="Password (existing users)">
-
-<input id="otp" placeholder="Enter OTP">
-
-<button onclick="generateOTP()">Generate OTP</button>
-
-<button onclick="login()">Login</button>
+<button onclick="adminLogin()">Login</button>
 
 </div>
 

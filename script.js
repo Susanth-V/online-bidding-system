@@ -1,6 +1,8 @@
 if(!localStorage.getItem("accounts")){
-localStorage.setItem("accounts", JSON.stringify([]));
+localStorage.setItem("accounts",JSON.stringify([]));
 }
+
+/* ADMIN LOGIN */
 
 function adminLogin(){
 
@@ -15,13 +17,15 @@ alert("Invalid admin login");
 
 }
 
+/* OTP GENERATION */
+
 function generateOTP(){
 
 const username=document.getElementById("username").value.trim();
 const email=document.getElementById("email").value.trim();
 
 if(username==="" || email===""){
-alert("Enter username and email first");
+alert("Enter username and email");
 return;
 }
 
@@ -29,9 +33,11 @@ const otp=Math.floor(100000+Math.random()*900000);
 
 localStorage.setItem("generatedOTP",otp);
 
-alert("OTP: "+otp);
+alert("Your OTP: "+otp);
 
 }
+
+/* USER LOGIN */
 
 function login(){
 
@@ -73,6 +79,8 @@ window.location.href="user.html";
 
 }
 
+/* AUCTIONEER LOGIN */
+
 function auctioneerLogin(){
 
 const username=document.getElementById("auctioneerUser").value;
@@ -83,13 +91,15 @@ let accounts=JSON.parse(localStorage.getItem("accounts"));
 let user=accounts.find(a=>a.username===username && a.password===password && a.role==="auctioneer");
 
 if(!user){
-alert("Invalid auctioneer login");
+alert("Invalid login");
 return;
 }
 
 window.location.href="auctioneer.html";
 
 }
+
+/* ADMIN CREATE USER */
 
 function createUser(){
 
@@ -107,6 +117,8 @@ alert("Account created");
 
 }
 
+/* ADMIN DELETE USER */
+
 function deleteUser(){
 
 const username=document.getElementById("deleteUserInput").value;
@@ -121,41 +133,21 @@ alert("User removed");
 
 }
 
+/* START AUCTION */
+
 function startAuction(){
 
 const type=document.getElementById("auctionType").value;
 const time=document.getElementById("auctionTime").value;
 
-localStorage.setItem("auctionRunning","true");
 localStorage.setItem("auctionType",type);
+localStorage.setItem("auctionRunning","true");
 localStorage.setItem("auctionTime",time);
 localStorage.setItem("bidHistory",JSON.stringify([]));
 
-startTimer();
-
 }
 
-function startTimer(){
-
-let time=Number(localStorage.getItem("auctionTime"));
-
-let timer=setInterval(()=>{
-
-time--;
-
-if(time<=0){
-
-clearInterval(timer);
-
-localStorage.setItem("auctionRunning","false");
-
-calculateWinner();
-
-}
-
-},1000);
-
-}
+/* PLACE BID */
 
 function placeBid(){
 
@@ -177,10 +169,11 @@ updateWinner();
 
 }
 
+/* UPDATE WINNER */
+
 function updateWinner(){
 
 let type=localStorage.getItem("auctionType");
-
 let history=JSON.parse(localStorage.getItem("bidHistory"))||[];
 
 if(history.length===0) return;
@@ -199,7 +192,7 @@ if(type==="second"){
 
 let sorted=[...history].sort((a,b)=>b.bid-a.bid);
 
-winner=sorted[1] || sorted[0];
+winner=sorted[1]||sorted[0];
 
 }
 
@@ -207,18 +200,12 @@ localStorage.setItem("currentWinner",winner.user);
 
 }
 
-function calculateWinner(){
-
-updateWinner();
-
-}
-
 function updateUserPanel(){
 
-const winner=document.getElementById("userWinner");
+let w=document.getElementById("userWinner");
 
-if(winner){
-winner.innerText=localStorage.getItem("currentWinner") || "None";
+if(w){
+w.innerText=localStorage.getItem("currentWinner")||"None";
 }
 
 }
