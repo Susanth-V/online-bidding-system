@@ -1,42 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Auctioneer Panel</title>
+<title>Auctioneer Login</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<script>
-if(localStorage.getItem("isAuctioneer")!=="true"){
-alert("Login first");
-window.location.href="auctioneer-login.html";
-}
-</script>
-
 <div class="card small-card">
 
-<h2>Auctioneer Panel</h2>
+<h2>Auctioneer Login</h2>
 
-<select id="auctionType">
-<option value="high">Highest Bid</option>
-<option value="low">Lowest Bid</option>
-<option value="second">Second Price</option>
-</select>
+<input id="auctioneerUser" placeholder="Username">
+<input id="auctioneerPass" type="password" placeholder="Password">
 
-<input id="auctionTime" placeholder="Time in seconds">
-
-<button onclick="startAuctioneerAuction()">Start Auction</button>
-
-<div class="divider"></div>
-
-<p>Timer: <span id="timer"></span></p>
-<p>Winner: <span id="winnerAuctioneer" class="winner-highlight"></span></p>
-
-<div class="divider"></div>
-
-<table id="auctionHistory"></table>
-<button onclick="loadAuctionHistory()">Refresh</button>
+<button onclick="auctioneerLogin()">Login</button>
 
 </div>
 
