@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Auction System</title>
+<title>Admin Login</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -9,19 +9,16 @@
 
 <div class="card small-card">
 
-<h2>Online Auction</h2>
+<h2>Admin Login</h2>
 
-<button onclick="location.href='admin-login.html'">Admin Login</button>
+<input id="adminUser" placeholder="Admin Username">
+<input id="adminPass" type="password" placeholder="Admin Password">
 
-<div class="divider"></div>
-
-<button onclick="location.href='auctioneer-login.html'">Auctioneer Login</button>
-
-<div class="divider"></div>
-
-<button onclick="location.href='user-login.html'">User Login</button>
+<button onclick="adminLogin()">Login</button>
 
 </div>
+
+<script src="script.js"></script>
 
 </body>
 </html>

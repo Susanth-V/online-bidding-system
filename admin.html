@@ -1,23 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>User Login</title>
+<title>Admin Dashboard</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+<script>
+if(localStorage.getItem("isAdmin")!=="true"){
+alert("Login as Admin first");
+window.location.href="admin-login.html";
+}
+</script>
+
 <div class="card small-card">
 
-<h2>User Login</h2>
+<h2>Admin Dashboard</h2>
 
-<input id="username" placeholder="Username">
+<p>Total Users: <span id="users"></span></p>
+<p>Current Winner: <span id="winner"></span></p>
+<p>Algorithm Complexity: <span id="complexity"></span></p>
 
-<input id="otp" placeholder="Enter OTP">
+<div class="divider"></div>
 
-<button onclick="generateOTP()">Generate OTP</button>
+<h3>Bid History</h3>
+<table id="history"></table>
 
-<button onclick="login()">Login</button>
+<button onclick="loadAuctionHistory()">Refresh</button>
 
 </div>
 
